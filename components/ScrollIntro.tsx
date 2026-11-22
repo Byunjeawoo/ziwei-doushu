@@ -1,29 +1,30 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScrollIntroProps {
   onComplete: () => void;
-  /** 跳过按钮文案 */
+  /* * 건너뛰기 버튼 복사 */
   skipLabel?: string;
 }
 
 const BEIDOU = ['天枢', '天璇', '天玑', '天权', '玉衡', '开阳', '摇光'];
 
 export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: ScrollIntroProps) {
-  // visible：整个 intro 是否在显示
-  // unrolled：卷轴是否已展开（控制内容浮现）
+  // visible: 전체 소개가 표시되는지 여부
+  // unrolled: 스크롤이 확장되었는지 여부(콘텐츠가 나타나도록 제어)
   const [visible, setVisible] = useState(true);
   const [unrolled, setUnrolled] = useState(false);
 
   useEffect(() => {
-    // 时间序列：
-    // 0.0s        : 卷轴杆在中央，纸卷起来（width: 0）
-    // 0.3-2.0s   : 卷轴往两侧展开（1.7s）
-    // 2.0s        : unrolled = true，内容浮现
-    // 2.0-3.5s   : 内容停留 1.5s 给用户欣赏
-    // 3.5s        : 整体开始淡出
-    // 4.2s        : visible = false，触发 onComplete
+    // 시계열:
+    // 0.0s: 스크롤 막대가 중앙에 있고 용지가 말려 있습니다(너비: 0).
+    // 0.3~2.0초: 스크롤이 양쪽으로 펼쳐집니다(1.7초).
+    // 2.0s: 펼쳐짐 = true, 콘텐츠가 나타남
+    // 2.0-3.5초: 사용자가 즐길 수 있도록 콘텐츠가 1.5초 동안 유지됩니다.
+    // 3.5초: 모든 것이 희미해지기 시작합니다.
+    // 4.2s: visible = false, onComplete 트리거
     const t1 = setTimeout(() => setUnrolled(true), 1900);
     const t2 = setTimeout(() => setVisible(false), 3500);
     const t3 = setTimeout(onComplete, 4200);
@@ -35,12 +36,12 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
     setTimeout(onComplete, 700);
   };
 
-  // 卷轴展开缓动：先快后慢（卷轴拉开的物理感）
+  // 스크롤 전개 슬로우 모션: 처음에는 빠르게, 다음에는 느리게(스크롤이 열리는 물리적 느낌)
   const easeUnroll = [0.32, 0.72, 0.36, 1.0] as const;
 
   return (
     <AnimatePresence>
-      {visible && (
+      {koNode(visible && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -138,7 +139,7 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                   whiteSpace: 'nowrap',
                   opacity: 0.85,
                 }}>
-                  {BEIDOU.join(' · ')}
+                  {koNode(BEIDOU.join(' · '))}
                 </div>
 
                 {/* 烫金细线 */}
@@ -158,9 +159,7 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                   margin: 0,
                   textShadow: '0 1px 0 rgba(255,250,235,0.3)',
                   whiteSpace: 'nowrap',
-                }}>
-                  紫微命盘
-                </h1>
+                }}>{koNode("자미두수 명반")}</h1>
 
                 {/* 副标 楷体 */}
                 <div style={{
@@ -171,9 +170,7 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                   marginTop: 'clamp(16px, 2.5vh, 24px)',
                   marginBottom: '6px',
                   whiteSpace: 'nowrap',
-                }}>
-                  观 天 之 象 · 察 人 之 命
-                </div>
+                }}>{koNode("하늘의 현상을 관찰하다·사람의 운명을 관찰하다")}</div>
                 <div style={{
                   fontSize: 'clamp(11px, 1.2vw, 14px)',
                   color: '#8b6410',
@@ -181,9 +178,7 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                   fontFamily: '"STSong", serif',
                   whiteSpace: 'nowrap',
                   opacity: 0.85,
-                }}>
-                  倪海厦《天纪》正宗体系
-                </div>
+                }}>{koNode("니하이샤 \"천기\" 정통 시스템")}</div>
 
                 {/* 朱砂方印 */}
                 <motion.div
@@ -208,8 +203,8 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
                     fontSize: 'clamp(11px, 1.2vw, 13px)',
                   }}
                 >
-                  <div style={{ display: 'flex', gap: '0' }}><span>王</span><span>多</span></div>
-                  <div style={{ display: 'flex', gap: '0' }}><span>鱼</span><span>印</span></div>
+                  <div style={{ display: 'flex', gap: '0' }}><span>{koNode("왕")}</span><span>{koNode("많이")}</span></div>
+                  <div style={{ display: 'flex', gap: '0' }}><span>{koNode("물고기")}</span><span>{koNode("봉인")}</span></div>
                 </motion.div>
 
                 {/* 底部装饰：八卦 */}
@@ -310,10 +305,10 @@ export default function ScrollIntro({ onComplete, skipLabel = '跳 过' }: Scrol
               e.currentTarget.style.color = 'rgba(232,220,196,0.55)';
             }}
           >
-            {skipLabel} →
+            {koNode(skipLabel)} →
           </button>
         </motion.div>
-      )}
+      ))}
     </AnimatePresence>
   );
 }

@@ -1,39 +1,28 @@
-# 参与贡献
+# 기여 안내
 
-欢迎提问题、提修复、提建议。先说清两件事，能省掉很多来回：
+이 저장소는 [원본 프로젝트](https://github.com/Renhuai123/ziwei-doushu)의 독립적인 한국어판입니다. 문제 보고, 번역 수정, 코드 개선을 환영합니다.
 
-- 本仓库是 [ouranic.cn](https://ouranic.cn/?from=gh-contrib) 排盘引擎的**开源快照**，定期从线上同步（节奏见 README「维护节奏与贡献」）。
-- 开源版**不含**断语库、AI 解读提示词和任何 `/api/*` 后端接口（见 README「开源边界」）。AI 解读、合盘分析在开源版里返回 404 是预期行为，需要你自己实现。
+공개 버전에는 상용 해석 데이터베이스, AI 해석용 백엔드, 회원·결제 시스템이 없습니다. API 기능을 사용하려면 별도로 구현해야 합니다.
 
-## 提问题
+## 문제 보고
 
-- **怎么用、想交流**：去 [讨论区](https://github.com/Renhuai123/ziwei-doushu/discussions)。
-- **觉得盘排得不对**：用「排盘结果疑问」模板，附上公历出生日期、几点几分、出生地或经度、性别、本项目的结果，以及你拿来对照的结果。只写「不准」我们没法查。
-  - 辅星亮度、闰月归属、晚子时是否换日，各流派本来就不同，引擎里做成了可切换的口径；这类差异不算 bug，但欢迎指出。
-- **程序报错、页面异常**：用「程序问题」模板，写清复现步骤和报错。
-- **正式站（ouranic.cn）的问题**：用「正式站问题」模板。
+- 배반 결과 문의에는 생년월일·시각·성별·출생지와 비교 근거를 적어 주세요.
+- 오류 보고에는 재현 방법, 실행 환경, 오류 메시지를 포함해 주세요.
+- 번역 수정에는 해당 페이지나 파일, 현재 문구, 제안하는 번역을 적어 주세요.
+- 다른 사람의 개인정보나 API 키는 올리지 마세요.
 
-请不要在 issue 里贴手机号、验证码，或未经本人同意的他人生辰信息。
-
-## 提交代码
+## 코드 변경
 
 ```bash
-npm ci               # 按 package-lock.json 安装
-npm run typecheck    # 类型检查
-npm test             # 排盘回归
+npm ci
+npm run typecheck
+npm test
 ```
 
-- 一个 PR 只做一件事，说明里写清改了什么、为什么。
-- **改排盘结果的**：附上对照证据（出处，或其他排盘软件的截图），并在 `scripts/regression/` 加回归测试、登记到 `package.json` 的 `test` 脚本。没有出处的口径改动一般不收。
-- CI 会在每次 push 和 PR 上跑同一套检查。
+한 번의 변경에는 관련된 작업만 담아 주세요. 배반 기준을 바꾸는 경우 출처나 대조 자료를 첨부하고 회귀 테스트를 추가해 주세요.
 
-## 许可
+중국어 별·궁·간지 이름은 계산과 외부 라이브러리 연동에 쓰는 내부 키입니다. 한국어 출력은 `lib/i18n/`에서 처리합니다. 내부 키를 임의로 번역하면 계산 결과가 달라질 수 있습니다.
 
-提交即表示你同意贡献内容按对应协议发布：
+## 라이선스
 
-- 代码：[MIT](./LICENSE)
-- 样本数据集：[CC BY 4.0](./DATASET-LICENSE)
-
----
-
-**English.** Issues and PRs are welcome. This repo is an open snapshot of the charting engine behind ouranic.cn; the interpretation database, AI prompts and all `/api/*` backend routes are not included, so AI features return 404 by design. For a chart you believe is wrong, please use the "Chart result question" form with full birth data and a reference result. Before opening a PR, run `npm ci`, `npm run typecheck` and `npm test`; changes to chart results need evidence and a regression test.
+코드 기여는 [MIT 라이선스](./LICENSE)를 따릅니다. 제외한 비상업용 강의 자료를 다시 추가하지 마세요. 원본 데이터셋의 조건은 [한국어 안내](./DATASET-LICENSE.ko.md)를 참고해 주세요. 데이터셋 자체는 이 저장소에 없습니다.

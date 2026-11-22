@@ -1,4 +1,5 @@
-export const metadata = { title: '隐私政策 · 紫微命盘', description: '紫微命盘隐私政策' };
+import { ko, koNode } from '@/lib/i18n/ko';
+export const metadata = { title: "개인정보 처리방침 · 자미두수 명반", description: "자미두수 명반개인정보 처리방침" };
 
 export default function PrivacyPage() {
   return (
@@ -6,64 +7,64 @@ export default function PrivacyPage() {
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--bg-0)', borderBottom: '1px solid var(--bdr)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
         <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--tx-3)', textDecoration: 'none' }}>
           <span style={{ fontSize: '16px' }}>‹</span>
-          <span>返回首页</span>
+          <span>{koNode("돌아가기홈 페이지")}</span>
         </a>
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
-        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>紫微命盘</span>
+        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>{koNode("자미두수 명반")}</span>
       </header>
       <main style={{ maxWidth: 800, margin: '0 auto', padding: '60px 24px 80px', color: 'var(--tx-1)', lineHeight: 1.8 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>隐私政策</h1>
-        <p style={{ fontSize: 12, color: 'var(--tx-3)', marginBottom: 32 }}>最后更新：2026年4月</p>
+        <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>{koNode("개인정보 처리방침")}</h1>
+        <p style={{ fontSize: 12, color: 'var(--tx-3)', marginBottom: 32 }}>{koNode("최종 업데이트 날짜: 2026년 4월")}</p>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>1. 我们收集的信息</h2>
-      <p>为提供紫微命盘排盘与解读服务，我们可能收集以下信息：</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("1. 당사가 수집하는 정보")}</h2>
+      <p>{koNode("자미두수 명반배반 및 통역 서비스를 제공하기 위해 당사는 다음 정보를 수집할 수 있습니다.")}</p>
       <ul style={{ paddingLeft: 24 }}>
-        <li><strong>命盘必要信息</strong>：姓名（选填）、出生公历年月日、出生时辰、性别、出生地经度</li>
-        <li><strong>账号信息（注册后）</strong>：手机号（用于短信验证与会员服务）</li>
-        <li><strong>交互信息</strong>：你在站内的点击、浏览、命盘历史记录</li>
-        <li><strong>反馈信息</strong>：你对解读内容的"准 / 不准"打分与文字反馈</li>
-        <li><strong>支付信息</strong>：购买会员或单项服务时通过第三方支付（支付宝 / 微信支付）处理，本平台不存储完整卡号或密码</li>
+        <li><strong>{koNode("명반 필수 정보")}</strong>{koNode(": 이름 (선택), 출생 양력 년, 월, 일, 출생 시진, 성별, 출생지 경도")}</li>
+        <li><strong>{koNode("계정 정보(등록 후)")}</strong>{koNode(":휴대전화번호(SMS인증 및 회원서비스에 사용)")}</li>
+        <li><strong>{koNode("대화형 정보")}</strong>{koNode(": 사이트의 클릭, 탐색 및 명반 기록")}</li>
+        <li><strong>{koNode("피드백 정보")}</strong>{koNode(": 통역 내용에 대한 귀하의 \"정확/부정확\" 평가 및 텍스트 피드백")}</li>
+        <li><strong>{koNode("결제정보")}</strong>{koNode(": 멤버십 구매 또는 개별 서비스 구매 시 제3자 결제(Alipay/WeChat Pay)를 통해 처리됩니다. 이 플랫폼은 전체 카드 번호나 비밀번호를 저장하지 않습니다.")}</li>
       </ul>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>2. 我们如何使用信息</h2>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("2. 당사가 정보를 사용하는 방법")}</h2>
       <ul style={{ paddingLeft: 24 }}>
-        <li>命盘信息仅用于本次解读与你账号下的历史命盘记录</li>
-        <li>手机号用于注册、登录、订单通知</li>
-        <li>反馈信息用于持续改进命理内容质量（脱敏后聚合分析）</li>
-        <li>聚合数据可能用于行业研究与平台优化</li>
+        <li>{koNode("명반 정보는 이 해석과 귀하의 계정에 있는 과거 명반 레코드에만 사용됩니다.")}</li>
+        <li>{koNode("휴대폰번호는 회원가입, 로그인, 주문알림 등에 사용됩니다.")}</li>
+        <li>{koNode("피드백 정보는 명리학 콘텐츠의 품질을 지속적으로 개선하는 데 사용됩니다(감감도 감소 후 집계 분석).")}</li>
+        <li>{koNode("집계된 데이터는 산업 연구 및 플랫폼 최적화에 사용될 수 있습니다.")}</li>
       </ul>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>3. 信息共享与第三方</h2>
-      <p>除以下情形外，我们不会向第三方共享你的个人信息：</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("3. 제3자와의 정보 공유")}</h2>
+      <p>{koNode("당사는 다음과 같은 경우를 제외하고 귀하의 개인정보를 제3자와 공유하지 않습니다.")}</p>
       <ul style={{ paddingLeft: 24 }}>
-        <li>支付服务商（支付宝 / 微信支付）：处理订单结算</li>
-        <li>短信服务商（如阿里云短信）：发送验证码</li>
-        <li>云服务商（如 Vercel / Cloudflare / 阿里云）：技术承载</li>
-        <li>AI 解读服务（如 Anthropic Claude）：处理你的"自由追问"对话（已做匿名化）</li>
-        <li>司法机关或政府部门基于法律法规的合法要求</li>
+        <li>{koNode("결제 서비스 제공업체(Alipay/WeChat Pay): 주문 정산 처리")}</li>
+        <li>{koNode("SMS 서비스 제공업체(예: Alibaba Cloud SMS): 인증 코드 전송")}</li>
+        <li>{koNode("클라우드 서비스 제공자(예: Vercel/Cloudflare/Alibaba Cloud): 기술 사업자")}</li>
+        <li>{koNode("AI 통역 서비스(예: Anthropic Claude): \"무료 질문\" 대화를 처리합니다(익명화)")}</li>
+        <li>{koNode("법률 및 규정에 따른 사법 당국 또는 정부 부서의 법적 요구 사항")}</li>
       </ul>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>4. 信息安全</h2>
-      <p>我们采取业界常见的技术与管理手段保护你的信息（HTTPS 传输加密、数据库加密存储、访问权限控制等）。但请注意，互联网传输无法保证 100% 安全。</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("4. 정보보안")}</h2>
+      <p>{koNode("당사는 귀하의 정보를 보호하기 위해 업계에서 공통적인 기술 및 관리 방법(HTTPS 전송 암호화, 데이터베이스 암호화 저장, 접근 권한 제어 등)을 채택합니다. 그러나 인터넷을 통한 전송은 100% 안전하다고 보장할 수 없습니다.")}</p>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>5. 你的权利</h2>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("5. 귀하의 권리")}</h2>
       <ul style={{ paddingLeft: 24 }}>
-        <li><strong>查询</strong>：可通过账号中心查看你的所有历史命盘与订单</li>
-        <li><strong>删除</strong>：联系客服删除账号下指定命盘 / 注销账号</li>
-        <li><strong>导出</strong>：可申请导出你的全部个人数据</li>
+        <li><strong>{koNode("쿼리")}</strong>{koNode(": 계정 센터를 통해 모든 과거 명반 및 주문을 볼 수 있습니다.")}</li>
+        <li><strong>{koNode("삭제")}</strong>{koNode(": 계정에서 지정된 명반을 삭제하려면 고객 서비스에 문의하십시오. / 계정을 취소하십시오.")}</li>
+        <li><strong>{koNode("수출")}</strong>{koNode(": 모든 개인정보 내보내기를 신청할 수 있습니다.")}</li>
       </ul>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>6. Cookie 与本地存储</h2>
-      <p>本站使用 cookie / localStorage 用于：保存你的暗黑/亮色主题偏好、最近的命盘历史、会员登录状态。你可在浏览器设置中关闭，但部分功能可能受影响。</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("6. 쿠키 및 로컬 저장소")}</h2>
+      <p>{koNode("이 사이트는 쿠키/localStorage를 사용하여 어두운/밝은 테마 기본 설정, 최근 명반 기록 및 회원 로그인 상태를 저장합니다. 브라우저 설정에서 닫기를 사용할 수 있지만 일부 기능이 영향을 받을 수 있습니다.")}</p>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>7. 未成年人</h2>
-      <p>本平台命理内容面向 18 岁以上成年用户。未成年人请在监护人同意下使用，并不得将解读用于重大人生决策。</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("7. 미성년자")}</h2>
+      <p>{koNode("본 플랫폼의 명리학 콘텐츠는 18세 이상의 성인 사용자를 대상으로 합니다. 미성년자는 보호자의 동의 하에 사용하시기 바라며, 인생의 중요한 결정에 해석을 사용할 수 없습니다.")}</p>
 
-      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>8. 政策变更</h2>
-      <p>本政策可能不定期更新。重大变更将以显著方式通知。继续使用即表示同意更新后的版本。</p>
+      <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>{koNode("8. 정책 변경")}</h2>
+      <p>{koNode("본 정책은 수시로 업데이트될 수 있습니다. 주요 변경사항은 눈에 띄게 공지됩니다. 계속 사용하면 업데이트된 버전에 동의하는 것으로 간주됩니다.")}</p>
 
         <p style={{ marginTop: 48, fontSize: 12, color: 'var(--tx-3)' }}>
-          <a href="/terms" style={{ color: 'var(--ac)' }}>服务条款</a> · <a href="/" style={{ color: 'var(--ac)' }}>返回首页</a>
+          <a href="/terms" style={{ color: 'var(--ac)' }}>{koNode("이용약관")}</a> · <a href="/" style={{ color: 'var(--ac)' }}>{koNode("돌아가기홈 페이지")}</a>
         </p>
       </main>
     </>

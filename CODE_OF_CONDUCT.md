@@ -1,24 +1,20 @@
-# 行为准则
+# 행동 강령
 
-我们希望这里是一个就事论事、互相尊重的地方。本准则参考 [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) 的精神改写。
+서로 존중하며 사실과 근거를 중심으로 논의하는 공간을 지향합니다. 이 강령은 [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/)의 취지를 바탕으로 작성했습니다.
 
-## 我们期望
+## 기대하는 태도
 
-- 对事不对人，讨论观点和证据，不攻击提出观点的人。
-- 尊重不同的流派和看法；有分歧时摆出处、摆对照，而不是比嗓门。
-- 对新人耐心，提问不嫌问题简单。
+- 사람을 공격하지 않고 주장과 근거를 토론합니다.
+- 서로 다른 유파와 견해를 존중하고, 의견이 다르면 출처와 비교 자료를 제시합니다.
+- 처음 참여하는 사람과 기초적인 질문에도 친절하게 답합니다.
 
-## 不能接受
+## 허용하지 않는 행동
 
-- 人身攻击、侮辱、骚扰、歧视性言论。
-- 未经本人同意公开他人的隐私，包括手机号、住址，以及他人的生辰等个人信息。
-- 借命理结论恐吓、诋毁具体的人。
-- 广告刷屏、与项目无关的推销。
+- 인신공격, 모욕, 괴롭힘, 차별적인 발언
+- 동의 없는 전화번호·주소·출생 정보 등 개인정보 공개
+- 명리 해석을 이용한 특정인에 대한 위협이나 비방
+- 반복 광고와 프로젝트에 무관한 판매 활동
 
-## 处理
+## 대응
 
-维护者可以编辑、隐藏或删除违反本准则的内容，必要时锁定讨论或拒绝相关账号继续参与。遇到问题，可以在 issue 里 @ 维护者，或通过 README「关于与联系」里的方式联系。
-
----
-
-**English.** Be respectful and stick to the issue. No harassment, personal attacks, or publishing other people's private information (including their birth data) without consent. Maintainers may edit, hide or remove content that violates this code, and may restrict participation when necessary.
+관리자는 이 강령을 위반한 내용을 수정·숨김·삭제하거나 토론을 잠글 수 있으며 필요한 경우 참여를 제한할 수 있습니다. 문제가 있으면 저장소의 이슈에서 관리자에게 알려 주세요.

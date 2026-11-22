@@ -1,11 +1,12 @@
-/** Web 表单必须计入均时差；固定样例沿用 true-solar-time.ts 的 NOAA 口径。 */
+import { ko } from '../../lib/i18n/ko';
+/* * 웹 양식은 평균 시차를 고려해야 합니다. 고정된 샘플은 true-solar-time.ts의 NOAA 표준을 따릅니다. */
 import assert from 'node:assert/strict';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import BirthForm, { type BirthFormState } from '../../components/BirthForm';
 import { formToBirthInfo, formToSearchParams, searchParamsToForm } from '../../lib/ziwei/share';
 
-// 与 palace-minor-stars.test.tsx 一致，兼容 tsx 独立运行时的 classic JSX transform。
+// Palace-minor-stars.test.tsx와 일치하며 tsx 독립 실행형 런타임의 클래식 JSX 변환과 호환됩니다.
 Object.assign(globalThis, { React });
 
 function formAt(overrides: Partial<BirthFormState> = {}): BirthFormState {
@@ -25,36 +26,36 @@ const render = (form: BirthFormState) => renderToStaticMarkup(
 );
 const cases = [
   {
-    label: '正均时差约 +16.36 分钟：10:50 → 11:06，巳时跨入午时',
+    label: "양의 평균 시차는 약 +16.36분입니다: 10:50 → 11:06, 사시가 오시로 교차합니다.",
     form: formAt(), expected: { year: 2000, month: 11, day: 3, hour: 6 }, branch: '午', correction: '+16',
   },
   {
-    label: '负均时差约 -14.19 分钟：11:10 → 10:55，午时退回巳时',
+    label: "음의 평균 시차는 약 -14.19분입니다: 11:10 → 10:55, 오시는 사시로 돌아갑니다.",
     form: formAt({ month: '2', day: '11', clockHour: '11', clockMinute: '10' }),
     expected: { year: 2000, month: 2, day: 11, hour: 5 }, branch: '巳', correction: '-14',
   },
   {
-    label: '正均时差跨入晚子时，应按现有 next-day 规则换日',
+    label: "양의 평균 시차가 야자시로 교차하므로 기존 익일 규칙에 따라 요일이 변경되어야 합니다.",
     form: formAt({ clockHour: '22' }),
     expected: { year: 2000, month: 11, day: 4, hour: 0 }, branch: '子', correction: '+16',
   },
   {
-    label: '负均时差退回亥时，不能按钟表 23 点换日',
+    label: "음의 평균 시차는 해시로 돌아가고 23시 방향에서는 날짜를 변경할 수 없습니다.",
     form: formAt({ month: '2', day: '11', clockHour: '23', clockMinute: '10' }),
     expected: { year: 2000, month: 2, day: 11, hour: 11 }, branch: '亥', correction: '-14',
   },
   {
-    label: '正均时差跨过午夜，只进位一天',
+    label: "양의 평균 시차는 자정을 지나 하루만 전달됩니다.",
     form: formAt({ clockHour: '23' }),
     expected: { year: 2000, month: 11, day: 4, hour: 0 }, branch: '子', correction: '+16',
   },
   {
-    label: '负均时差回到前日 23 点，晚子时规则抵消回退',
+    label: "음의 평균 시차가 전날 23포인트로 돌아왔고, 야자시 규칙이 후퇴를 상쇄했다.",
     form: formAt({ month: '2', day: '11', clockHour: '0', clockMinute: '10' }),
     expected: { year: 2000, month: 2, day: 11, hour: 0 }, branch: '子', correction: '-14',
   },
   {
-    label: '经度修正 -80 分钟与均时差叠加：12:10 → 11:06',
+    label: "경도보정 -80분 평균시차 중첩 : 12:10 → 11:06",
     form: formAt({ longitude: 100, clockHour: '12', clockMinute: '10' }),
     expected: { year: 2000, month: 11, day: 3, hour: 6 }, branch: '午', correction: '-64',
   },
@@ -63,33 +64,33 @@ const cases = [
 for (const { label, form, expected, branch, correction } of cases) {
   assert.deepEqual(pick(formToBirthInfo(form)), expected, label);
   const html = render(form);
-  assert.ok(html.includes(`>${branch}时<`), `表单预览应与提交一致：${label}`);
-  assert.ok(html.includes(`总时差 ${correction} 分钟`), `显示总修正量：${label}`);
+  assert.ok(html.includes(`>${ko(branch)}시<`), `양식 미리보기는 제출물과 일치해야 합니다.${label}`);
+  assert.ok(html.includes(`총 시차${correction}분`), `총 수정량 표시:${label}`);
   const restored = searchParamsToForm(formToSearchParams(form));
   assert.ok(restored);
-  assert.deepEqual(formToBirthInfo({ ...formAt(), ...restored }), formToBirthInfo(form), `分享链接复现：${label}`);
+  assert.deepEqual(formToBirthInfo({ ...formAt(), ...restored }), formToBirthInfo(form), `공유 링크 재생:${label}`);
 }
 
-// 同一钟表时间和经度，仅改变日期也会改变均时差与时辰。
+// 동일한 시계 시간과 경도에 대해 날짜만 변경하면 평균 시차도 시진로 변경됩니다.
 const winter = formAt({ month: '2', day: '11' });
 assert.equal(formToBirthInfo(winter).hour, 5);
-assert.ok(render(winter).includes('>巳时<'));
-assert.ok(render(formAt()).includes('>午时<'));
+assert.ok(render(winter).includes('>사시<'));
+assert.ok(render(formAt()).includes('>오시<'));
 
 const control = formAt({ clockMinute: '20' });
-assert.equal(formToBirthInfo(control).hour, 5, '远离边界的样例仍为巳时');
+assert.equal(formToBirthInfo(control).hour, 5, "경계에서 멀리 떨어진 예는 여전히 사시입니다.");
 
 const noLocation = formAt({ province: '', city: '' });
-assert.equal(formToBirthInfo(noLocation).hour, 5, '未填出生地不应用均时差');
+assert.equal(formToBirthInfo(noLocation).hour, 5, "출생지를 기재하지 않은 경우에는 평균 시차가 적용되지 않습니다.");
 assert.equal(formToBirthInfo(noLocation).longitude, undefined);
-assert.ok(render(noLocation).includes('>巳时<'));
+assert.ok(render(noLocation).includes('>사시<'));
 
 const unknown = formAt({ clockHour: '22', unknownTime: true });
-assert.deepEqual(pick(formToBirthInfo(unknown)), { year: 2000, month: 11, day: 3, hour: 0 }, '时辰不详保持原日期与子时');
-assert.ok(render(unknown).includes('>子时<'));
+assert.deepEqual(pick(formToBirthInfo(unknown)), { year: 2000, month: 11, day: 3, hour: 0 }, "시진 알 수 없음 자시로 원래 날짜 유지");
+assert.ok(render(unknown).includes('>자시<'));
 
 const incomplete = formAt({ year: '', month: '', day: '', longitude: 100, clockHour: '12', clockMinute: '10' });
-assert.deepEqual(pick(formToBirthInfo(incomplete)), { year: 0, month: 0, day: 0, hour: 5 }, '未填日期时沿用经度修正，不生成无效日期');
-assert.ok(!render(incomplete).includes('NaN'), '未填日期的预览不应出现 NaN');
+assert.deepEqual(pick(formToBirthInfo(incomplete)), { year: 0, month: 0, day: 0, hour: 5 }, "날짜를 입력하지 않으면 경도 보정이 적용되어 잘못된 날짜가 생성되지 않습니다.");
+assert.ok(!render(incomplete).includes('NaN'), "날짜가 없는 미리보기에는 NaN이 포함되어서는 안 됩니다.");
 
 console.log('Web form equation-of-time regression passed: preview, submission, rollover and sharing');

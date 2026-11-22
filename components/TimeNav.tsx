@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { motion } from 'framer-motion';
 import { STEMS, SI_HUA_TABLE } from '@/lib/ziwei/constants';
 import type { ZiweiChart } from '@/lib/ziwei/types';
@@ -13,12 +14,12 @@ interface TimeNavProps {
   onYearChange: (year: number) => void;
 }
 
-/** 由年份计算天干索引 (0-9) */
+/* * 천간 지수는 연도(0-9)에서 계산됩니다. */
 export function getYearStemIndex(year: number): number {
   return ((year - 4) % 10 + 10) % 10;
 }
 
-/** 根据天干索引返回四化映射：starName → SiHua */
+/* * 천간 인덱스 돌아가기사화에 따른 매핑: starName → SiHua */
 export function buildSiHuaOverlay(stemIndex: number): Record<string, string> {
   const stars = SI_HUA_TABLE[stemIndex];
   if (!stars) return {};
@@ -46,7 +47,7 @@ export default function TimeNav({
 }: TimeNavProps) {
   const currentDx = chart.daXians[chart.currentDaXianIndex];
 
-  // 计算当前叠加四化信息
+  // 현재 중첩된 사화 정보를 계산합니다.
   const getOverlayInfo = (): { stemName: string; overlay: Record<string, string> } | null => {
     if (view === 'mingpan') return null;
 
@@ -84,16 +85,14 @@ export default function TimeNav({
         <TabButton
           active={view === 'mingpan'}
           onClick={() => onViewChange('mingpan')}
-        >
-          本命
-        </TabButton>
+        >{koNode("본명")}</TabButton>
 
         {/* 大限 */}
         <TabButton
           active={view === 'daxian'}
           onClick={() => onViewChange('daxian')}
         >
-          {currentDx ? `大限 ${currentDx.startAge}–${currentDx.endAge}` : '大限'}
+          {koNode(currentDx ? `대한${currentDx.startAge}–${currentDx.endAge}` : '大限')}
         </TabButton>
 
         {/* 流年 — 含年份切换 */}
@@ -112,9 +111,7 @@ export default function TimeNav({
             onClick={() => onViewChange('liunian')}
             className="text-[10px] font-medium flex-1 text-center"
             style={{ color: view === 'liunian' ? 'var(--t-gold)' : 'var(--t-faint)' }}
-          >
-            流年
-          </button>
+          >{koNode("유년")}</button>
           {/* 年份 +/- */}
           <div className="flex items-center gap-0.5">
             <button
@@ -129,7 +126,7 @@ export default function TimeNav({
               style={{ color: view === 'liunian' ? 'var(--t-gold)' : 'var(--t-faint)' }}
               onClick={() => onViewChange('liunian')}
             >
-              {liunianYear}
+              {koNode(liunianYear)}
             </span>
             <button
               onClick={e => { e.stopPropagation(); onYearChange(liunianYear + 1); if (view !== 'liunian') onViewChange('liunian'); }}
@@ -143,7 +140,7 @@ export default function TimeNav({
       </div>
 
       {/* 叠加四化说明行 */}
-      {overlayInfo && (
+      {koNode(overlayInfo && (
         <motion.div
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,19 +148,18 @@ export default function TimeNav({
           className="flex items-center gap-2 mt-1.5 px-1 flex-wrap"
         >
           <span className="text-[9px]" style={{ color: 'var(--t-faint)' }}>
-            {view === 'daxian' ? '大限' : `${liunianYear}`}·{overlayInfo.stemName}年四化：
-          </span>
-          {(['禄', '权', '科', '忌'] as const).map(sh => {
+            {koNode(view === 'daxian' ? '大限' : `${liunianYear}`)}·{koNode(overlayInfo.stemName)}{koNode("연도 사화:")}</span>
+          {koNode((['禄', '权', '科', '忌'] as const).map(sh => {
             const starName = Object.keys(overlayInfo.overlay).find(k => overlayInfo.overlay[k] === sh);
             if (!starName) return null;
             return (
               <span key={sh} className="text-[9px] font-medium" style={{ color: SIHUA_COLORS[sh] }}>
-                {starName}化{sh}
+                {koNode(starName)}{koNode("화")}{koNode(sh)}
               </span>
             );
-          })}
+          }))}
         </motion.div>
-      )}
+      ))}
     </div>
   );
 }
@@ -187,7 +183,7 @@ function TabButton({
         border: active ? '1px solid rgba(212,168,67,0.25)' : '1px solid transparent',
       }}
     >
-      {children}
+      {koNode(children)}
     </button>
   );
 }

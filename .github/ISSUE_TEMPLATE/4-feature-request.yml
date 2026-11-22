@@ -1,19 +1,26 @@
-name: 功能建议 / Feature request
-description: 想要的新功能或改进
+name: "기능 제안"
+description: "추가하거나 개선하고 싶은 기능을 알려 주세요."
 labels: ["enhancement"]
 body:
+  - type: markdown
+    attributes:
+      value: "구체적인 사용 상황과 기대하는 동작을 설명해 주세요."
   - type: textarea
     id: need
     attributes:
-      label: 想解决什么问题
+      label: "해결하려는 문제"
     validations:
       required: true
   - type: textarea
     id: idea
     attributes:
-      label: 你设想的做法
+      label: "제안하는 방법"
+    validations:
+      required: false
   - type: textarea
     id: source
     attributes:
-      label: 依据（涉及命理口径时请写）
-      description: 出自哪本书、哪一讲，或哪个排盘软件的哪种设置。没有出处的口径改动我们一般不收。
+      label: "근거 자료"
+      placeholder: "배반 기준 변경이라면 책·강의·프로그램 설정 등 비교 근거를 적어 주세요."
+    validations:
+      required: false

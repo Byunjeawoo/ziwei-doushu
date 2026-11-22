@@ -1,28 +1,35 @@
-name: 正式站问题 / ouranic.cn issue
-description: 线上网站（ouranic.cn）登录、支付、显示等问题
+name: "원본 운영 사이트 문의"
+description: "ouranic.cn의 로그인·결제·화면 관련 문의"
 labels: ["bug"]
 body:
+  - type: markdown
+    attributes:
+      value: "이 저장소는 원본에서 파생된 한국어판입니다. 원본 운영 사이트의 계정·결제 문제는 원본 운영자에게 문의해야 합니다."
   - type: input
     id: url
     attributes:
-      label: 出问题的页面地址
-      placeholder: https://ouranic.cn/……
+      label: "문제가 발생한 페이지 주소"
+      placeholder: "https://ouranic.cn/"
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: 怎么出现的
-      placeholder: 点了什么、填了什么、看到什么报错
+      label: "문제 발생 과정"
+      placeholder: "어떤 항목을 입력하거나 누른 뒤 어떤 오류가 나타났나요?"
     validations:
       required: true
   - type: input
     id: env
     attributes:
-      label: 浏览器与系统
-      placeholder: 例：Windows 11 / Chrome 153 / 公司网络开了代理
+      label: "브라우저 및 운영체제"
+      placeholder: "예: Windows 11 / Chrome"
+    validations:
+      required: false
   - type: textarea
     id: screenshot
     attributes:
-      label: 截图
-      description: 请勿贴出手机号、验证码、他人的生辰等隐私信息。
+      label: "스크린샷"
+      placeholder: "전화번호, 인증번호, 다른 사람의 출생 정보는 가려 주세요."
+    validations:
+      required: false

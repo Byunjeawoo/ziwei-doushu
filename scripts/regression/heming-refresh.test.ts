@@ -6,7 +6,7 @@ import type { BirthInfo } from '../../lib/ziwei/types';
 
 // Exercise the actual request callback across two renders, without a private backend.
 const source = readFileSync(new URL('../../app/heming/page.tsx', import.meta.url), 'utf8');
-const start = source.indexOf('  // 表单是否填齐');
+const start = source.indexOf("// 양식이 작성되었나요?");
 const end = source.indexOf('  const cardStyle =', start);
 assert.ok(start >= 0 && end > start);
 const body = `export function makeRun(ctx) {

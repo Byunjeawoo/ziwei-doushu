@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace, Star } from '@/lib/ziwei/types';
@@ -21,7 +22,7 @@ const BRANCH_GRID_POS: Record<number, [number, number]> = {
   2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4],
 };
 
-// 每个地支宫位在网格中的中心坐标（百分比）
+// 그리드에 있는 각 지지 주택의 중심 좌표(백분율)
 const BRANCH_SVG_POS: Record<number, [number, number]> = {
   5: [12.5, 12.5], 6: [37.5, 12.5], 7: [62.5, 12.5], 8: [87.5, 12.5],
   4: [12.5, 37.5],                                      9: [87.5, 37.5],
@@ -29,7 +30,7 @@ const BRANCH_SVG_POS: Record<number, [number, number]> = {
   2: [12.5, 87.5], 1: [37.5, 87.5], 0: [62.5, 87.5], 11: [87.5, 87.5],
 };
 
-// 绕盘面顺时针排列（用于三方四正四边形排序）
+// 디스크 표면을 중심으로 시계 방향으로 배열(삼방사정 사변형 정렬용)
 const CLOCKWISE_INDEX: Record<number, number> = {
   5: 0, 6: 1, 7: 2, 8: 3,
   9: 4, 10: 5,
@@ -41,12 +42,12 @@ function sortClockwise(branches: number[]): number[] {
   return [...branches].sort((a, b) => CLOCKWISE_INDEX[a] - CLOCKWISE_INDEX[b]);
 }
 
-/** 三方四正：本宫 + 对宫 + 两个三合宫 */
+/* * 삼방사정: 자신의 궁 + 대궁 + 삼합 궁 2개 */
 function getSanFangSiZheng(branch: number): [number, number, number, number] {
   return [
     branch,
-    (branch + 6) % 12,   // 对宫
-    (branch + 4) % 12,   // 三合1
+    (branch + 6) % 12,   // 대궁
+    (branch + 4) % 12,   // 삼합1
     (branch + 8) % 12,   // 三合2
   ];
 }
@@ -61,7 +62,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
   const palaceMap: Record<number, Palace> = {};
   chart.palaces.forEach(p => { palaceMap[p.branch] = p; });
 
-  // 计算当前叠加四化数据（大限或流年）
+  // 현재 중첩된 사화 데이터(대한 또는 유년)를 계산합니다.
   const currentDx = chart.daXians[chart.currentDaXianIndex];
   const overlayData: Record<string, string> = (() => {
     if (timeView === 'daxian' && currentDx) {
@@ -75,7 +76,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
   })();
   const overlayLabel = timeView === 'daxian' ? '限' : timeView === 'liunian' ? '年' : undefined;
 
-  // 十二神煞只在展示层计算：岁前/将前按当前视图支，博士始终按生年干与性别。
+  // 십이신은 디스플레이 레이어에서만 계산됩니다. 몇 년 전/예정은 현재 보기를 기반으로 하며 의사는 항상 생년를 눌러 성별를 방해합니다.
   const shierShenAnchor = timeView === 'liunian'
     ? (((liunianYear - 4) % 12) + 12) % 12
     : timeView === 'daxian' && currentDx
@@ -91,7 +92,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
     }
   };
 
-  // 三方四正
+  // 삼방사정
   const sanFangBranches = selectedBranch !== null ? getSanFangSiZheng(selectedBranch) : null;
   const sanFangSet = sanFangBranches ? new Set(sanFangBranches) : null;
 
@@ -113,11 +114,10 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
         className="text-center mb-3"
       >
         <div className="text-[10px] tracking-[0.5em] uppercase mb-1" style={{ color: 'var(--t-faint)' }}>
-          Zi Wei Dou Shu
+          자미 Dou Shu
         </div>
         <h2 className="text-sm tracking-[0.25em] font-medium" style={{ color: 'var(--t-gold)' }}>
-          {chart.birthInfo.name ? `${chart.birthInfo.name} · ` : ''}紫微斗数命盘
-        </h2>
+          {chart.birthInfo.name ? `${chart.birthInfo.name} · ` : ''}{koNode("자미두수명반")}</h2>
       </motion.div>
 
       {/* 4x4 命盘网格（含 SVG 叠加层） */}
@@ -132,7 +132,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
         }}
       >
-        {ANIMATION_ORDER.map((branch, i) => {
+        {koNode(ANIMATION_ORDER.map((branch, i) => {
           const [row, col] = BRANCH_GRID_POS[branch];
           const palace = palaceMap[branch];
           if (!palace) return null;
@@ -156,7 +156,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
               />
             </div>
           );
-        })}
+        }))}
 
         {/* 中央信息区 */}
         <motion.div
@@ -171,35 +171,35 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           </div>
 
           <div className="text-center space-y-1">
-            <div className="text-[9px] tracking-[0.3em] font-medium" style={{ color: 'var(--t-gold)' }}>紫微斗数</div>
+            <div className="text-[9px] tracking-[0.3em] font-medium" style={{ color: 'var(--t-gold)' }}>{koNode("자미두수")}</div>
             <div className="text-[10px] space-y-0.5" style={{ color: 'var(--t-faint)' }}>
-              <div>命宫 <span style={{ color: 'var(--t-gold)', opacity: 0.7 }}>{BRANCHES[chart.mingGongBranch]}</span></div>
-              <div>身宫 <span className="text-sky-500/70">{BRANCHES[chart.shenGongBranch]}</span></div>
-              <div className="text-[9px]" style={{ color: 'var(--t-gold)', opacity: 0.75 }}>{chart.wuxingJuName}</div>
+              <div>{koNode("명궁")}<span style={{ color: 'var(--t-gold)', opacity: 0.7 }}>{koNode(BRANCHES[chart.mingGongBranch])}</span></div>
+              <div>{koNode("신궁")}<span className="text-sky-500/70">{koNode(BRANCHES[chart.shenGongBranch])}</span></div>
+              <div className="text-[9px]" style={{ color: 'var(--t-gold)', opacity: 0.75 }}>{koNode(chart.wuxingJuName)}</div>
             </div>
           </div>
 
-          {chart.currentDaXianIndex >= 0 && (() => {
+          {koNode(chart.currentDaXianIndex >= 0 && (() => {
             const dx = chart.daXians[chart.currentDaXianIndex];
             return (
               <div className="border border-purple-500/30 rounded-lg px-3 py-1.5 text-center"
                 style={{ background: 'rgba(147,51,234,0.06)' }}>
-                <div className="text-[8px] text-purple-500/80 mb-0.5 tracking-wider">当前大限</div>
-                <div className="text-[12px] text-purple-400 font-medium tabular-nums">{dx.startAge}–{dx.endAge}岁</div>
-                <div className="text-[9px] text-purple-500/60">{dx.palaceName}</div>
+                <div className="text-[8px] text-purple-500/80 mb-0.5 tracking-wider">{koNode("현재대한")}</div>
+                <div className="text-[12px] text-purple-400 font-medium tabular-nums">{koNode(dx.startAge)}–{koNode(dx.endAge)}{koNode("세")}</div>
+                <div className="text-[9px] text-purple-500/60">{koNode(dx.palaceName)}</div>
               </div>
             );
-          })()}
+          })())}
 
           <div className="text-[8px] text-center leading-relaxed font-mono" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>
-            {chart.lunarInfo.lunarYear}·{chart.lunarInfo.isLeapMonth ? '闰' : ''}
-            {chart.lunarInfo.lunarMonth}·{chart.lunarInfo.lunarDay}
+            {koNode(chart.lunarInfo.lunarYear)}·{koNode(chart.lunarInfo.isLeapMonth ? '闰' : '')}
+            {koNode(chart.lunarInfo.lunarMonth)}·{koNode(chart.lunarInfo.lunarDay)}
           </div>
         </motion.div>
 
         {/* ── 三方四正 SVG 连线（绝对定位在 grid 内部，受 overflow:hidden 裁切） ── */}
         <AnimatePresence>
-          {sanFangBranches !== null && (
+          {koNode(sanFangBranches !== null && (
             <motion.div
               key={`sf-${selectedBranch}`}
               initial={{ opacity: 0 }}
@@ -219,12 +219,12 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ display: 'block' }}
               >
-                {(() => {
-                  // 三角形（三方）+ 一条直线（对宫）
-                  const p0 = BRANCH_SVG_POS[sanFangBranches[0]]; // 本宫
-                  const p1 = BRANCH_SVG_POS[sanFangBranches[1]]; // 对宫
-                  const p2 = BRANCH_SVG_POS[sanFangBranches[2]]; // 三合1
-                  const p3 = BRANCH_SVG_POS[sanFangBranches[3]]; // 三合2
+                {koNode((() => {
+                  // 삼각형(삼각)+직선(대궁)
+                  const p0 = BRANCH_SVG_POS[sanFangBranches[0]]; // 이 궁
+                  const p1 = BRANCH_SVG_POS[sanFangBranches[1]]; // 대궁
+                  const p2 = BRANCH_SVG_POS[sanFangBranches[2]]; // 삼합1
+                  const p3 = BRANCH_SVG_POS[sanFangBranches[3]]; // 삼합2
                   const dash = "6,5";
                   const stroke = "rgba(37,99,235,0.55)";
                   const sw = "1.5";
@@ -257,20 +257,20 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                         strokeDasharray={dash} strokeLinecap="round"
                       />
                       {/* 四个宫位中心标记点 */}
-                      {[p0, p1, p2, p3].map((p, i) => (
+                      {koNode([p0, p1, p2, p3].map((p, i) => (
                         <circle
                           key={i}
                           cx={`${p[0]}%`} cy={`${p[1]}%`}
                           r="3"
                           fill={i === 0 ? 'rgba(37,99,235,0.8)' : 'rgba(37,99,235,0.45)'}
                         />
-                      ))}
+                      )))}
                     </>
                   );
-                })()}
+                })())}
               </svg>
             </motion.div>
-          )}
+          ))}
         </AnimatePresence>
       </div>
 
@@ -281,17 +281,15 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
         transition={{ delay: 0.7 }}
         className="mt-3 flex items-center justify-center gap-2 text-[9px] flex-wrap"
       >
-        {[
+        {koNode([
           { h: '化禄', c: 'text-emerald-500 border-emerald-500/30' },
           { h: '化权', c: 'text-blue-500 border-blue-500/30' },
           { h: '化科', c: 'text-yellow-500 border-yellow-500/30' },
           { h: '化忌', c: 'text-red-500 border-red-500/30' },
         ].map(({ h, c }) => (
-          <span key={h} className={`border px-1.5 py-0.5 rounded-full font-medium ${c}`}>{h}</span>
-        ))}
-        <span className="px-1.5 py-0.5 rounded-full" style={{ color: 'var(--t-faint)', border: '1px solid var(--t-border)' }}>
-          点击宫位看三方四正
-        </span>
+          <span key={h} className={`border px-1.5 py-0.5 rounded-full font-medium ${c}`}>{koNode(h)}</span>
+        )))}
+        <span className="px-1.5 py-0.5 rounded-full" style={{ color: 'var(--t-faint)', border: '1px solid var(--t-border)' }}>{koNode("삼방사정을 보려면 궁을 클릭하세요.")}</span>
       </motion.div>
     </div>
   );

@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart } from '@/lib/ziwei/types';
@@ -13,12 +14,12 @@ interface ChatPanelProps {
 }
 
 const PRESET_QUESTIONS = [
-  '我的整体命格如何？性格特点是什么？',
-  '我的感情婚姻运势如何？',
-  '我的事业财运如何？适合什么方向？',
-  '我现在的大限运势如何？',
-  '我的健康需要注意什么？',
-  '今年的流年运势如何？',
+  "나의 전반적인 운명은 무엇입니까? 캐릭터 특성은 무엇입니까?",
+  "나의 연애운과 결혼운은?",
+  "나의 경력과 금전적 운세는 어떻습니까? 어떤 방향이 적당한가요?",
+  "나의 현재 대한 재산은 얼마입니까?",
+  "건강을 위해 어떤 점에 주의해야 하나요?",
+  "유년의 올해 운세는?",
 ];
 
 export default function ChatPanel({ chart }: ChatPanelProps) {
@@ -83,7 +84,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
       const missing = e instanceof Error && e.message === 'api-missing';
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: missing ? '开源版不含 AI 解读接口（/api/interpret），需要你自己实现后才能用，详见 README「快速开始」。排盘本身不需要任何 API Key。' : '解读失败，请检查API配置或稍后重试。',
+        content: missing ? "오픈소스 버전에는 AI 해석 인터페이스(/api/interpret)가 포함되어 있지 않습니다. 사용하기 전에 직접 구현해야 합니다. 자세한 내용은 README \"빠른 시작\"을 참조하세요. 배반 자체에는 API 키가 필요하지 않습니다." : "해석에 실패했습니다. API 구성을 확인하거나 나중에 다시 시도하세요.",
       }]);
     } finally {
       setLoading(false);
@@ -94,24 +95,21 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
     <div className="flex flex-col h-full rounded-xl overflow-hidden card-glass">
       {/* 标题 */}
       <div className="px-4 py-3 flex-shrink-0" style={{ borderBottom: '1px solid var(--t-border)' }}>
-        <h3 className="text-xs font-medium tracking-widest" style={{ color: 'var(--t-gold)' }}>AI 命盘解读</h3>
-        <p className="text-[10px] mt-0.5" style={{ color: 'var(--t-faint)' }}>倪海厦正宗紫微斗数 · 智慧解析</p>
+        <h3 className="text-xs font-medium tracking-widest" style={{ color: 'var(--t-gold)' }}>{koNode("AI 명반의 해석")}</h3>
+        <p className="text-[10px] mt-0.5" style={{ color: 'var(--t-faint)' }}>{koNode("니하이샤 정통 자미두수 · 지능형 분석")}</p>
       </div>
 
       {/* 消息列表 */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
-        {messages.length === 0 && (
+        {koNode(messages.length === 0 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
             <div className="text-4xl mb-3" style={{ color: 'var(--t-gold)', opacity: 0.15 }}>✦</div>
-            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-faint)' }}>
-              命盘已生成，可直接提问<br />
-              或从下方选择常见问题开始解读
-            </p>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--t-faint)' }}>{koNode("명반이 생성되었습니다. 직접 질문하실 수 있습니다.")}<br />{koNode("또는 아래에서 자주 묻는 질문을 선택하여 통역을 시작하세요.")}</p>
           </motion.div>
-        )}
+        ))}
 
         <AnimatePresence>
-          {messages.map((msg, i) => (
+          {koNode(messages.map((msg, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 8 }}
@@ -130,26 +128,26 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
                   color: 'var(--t-text)',
                 }}
               >
-                {msg.role === 'assistant' && (
-                  <div className="text-[10px] mb-1" style={{ color: 'var(--t-faint)' }}>命理师 ·</div>
-                )}
+                {koNode(msg.role === 'assistant' && (
+                  <div className="text-[10px] mb-1" style={{ color: 'var(--t-faint)' }}>{koNode("명리학자 ·")}</div>
+                ))}
                 <div className="whitespace-pre-wrap text-xs leading-relaxed">
-                  {msg.content}
-                  {loading && i === messages.length - 1 && msg.role === 'assistant' && (
+                  {koNode(msg.content)}
+                  {koNode(loading && i === messages.length - 1 && msg.role === 'assistant' && (
                     <span className="inline-block w-1.5 h-3 ml-0.5 animate-pulse" style={{ background: 'var(--t-gold)', opacity: 0.6 }} />
-                  )}
+                  ))}
                 </div>
               </div>
             </motion.div>
-          ))}
+          )))}
         </AnimatePresence>
       </div>
 
       {/* 预设问题 */}
-      {messages.length === 0 && (
+      {koNode(messages.length === 0 && (
         <div className="px-3 pb-2 flex-shrink-0">
           <div className="grid grid-cols-2 gap-1.5">
-            {PRESET_QUESTIONS.map((q, i) => (
+            {koNode(PRESET_QUESTIONS.map((q, i) => (
               <button
                 key={i}
                 onClick={() => sendMessage(q)}
@@ -169,12 +167,12 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
                   e.currentTarget.style.color = 'var(--t-text2)';
                 }}
               >
-                {q}
+                {koNode(q)}
               </button>
-            ))}
+            )))}
           </div>
         </div>
-      )}
+      ))}
 
       {/* 输入框 */}
       <div className="px-3 pb-3 pt-2 flex-shrink-0" style={{ borderTop: '1px solid var(--t-border)' }}>
@@ -184,7 +182,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage(input)}
-            placeholder="输入问题，如：我的感情运势如何？"
+            placeholder={ko("다음과 같은 질문을 입력하세요. 내 관계 운세는 어떻습니까?")}
             disabled={loading}
             className="flex-1 rounded-lg px-3 py-2 text-xs focus:outline-none transition-colors"
             style={{
@@ -202,9 +200,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
               border: '1px solid rgba(212,168,67,0.25)',
               color: 'var(--t-gold)',
             }}
-          >
-            解读
-          </button>
+          >{koNode("해석")}</button>
         </div>
       </div>
     </div>

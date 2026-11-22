@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 export type Theme = 'dark' | 'light';
@@ -42,7 +43,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>
-      {children}
+      {koNode(children)}
     </ThemeContext.Provider>
   );
 }

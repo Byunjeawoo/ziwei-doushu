@@ -1,34 +1,34 @@
 'use client';
 
-/**
- * 命盘分享卡 — 真正的 12 宫命盘缩略图
+import { ko, koNode } from '@/lib/i18n/ko';
+/* *
+ * 명반공유 카드 — 실제 십이궁 명반 썸네일
  *
- * 设计：左侧 12 宫缩略命盘 + 右侧关键信息
- * 浏览器原生中文字体，不依赖 SSR
- */
+ * 디자인 : 왼쪽 12자궁수축 명반 + 오른쪽 핵심정보
+ * 브라우저 기본 중국어 글꼴은 SSR에 의존하지 않습니다. */
 
 import type { ZiweiChart } from '@/lib/ziwei/types';
 import { SITE_HOST } from '@/lib/site';
 
 const BRANCH_NAMES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
-// 紫微斗数 12 宫地支布局（按"地支盘"标准排列，固定）
-// 寅卯辰巳 → 上行
-// 丑    午
-// 子    未
-// 亥戌酉申 → 下行
+// 자미두수 12 궁 지지 레이아웃("지지 플레이트" 표준에 따라 배열, 고정)
+// 인마오첸시 → 상향
+// 슈 정오
+// 아들은 아직 아니야
+// Haixu Youshen → 하향
 const ZHIWEI_LAYOUT: Array<{ branch: number; row: number; col: number }> = [
-  { branch: 2,  row: 0, col: 0 }, // 寅
-  { branch: 3,  row: 0, col: 1 }, // 卯
-  { branch: 4,  row: 0, col: 2 }, // 辰
-  { branch: 5,  row: 0, col: 3 }, // 巳
-  { branch: 1,  row: 1, col: 0 }, // 丑
-  { branch: 6,  row: 1, col: 3 }, // 午
-  { branch: 0,  row: 2, col: 0 }, // 子
-  { branch: 7,  row: 2, col: 3 }, // 未
-  { branch: 11, row: 3, col: 0 }, // 亥
-  { branch: 10, row: 3, col: 1 }, // 戌
-  { branch: 9,  row: 3, col: 2 }, // 酉
+  { branch: 2,  row: 0, col: 0 }, // 음
+  { branch: 3,  row: 0, col: 1 }, // 마오
+  { branch: 4,  row: 0, col: 2 }, // 첸
+  { branch: 5,  row: 0, col: 3 }, // 시
+  { branch: 1,  row: 1, col: 0 }, // 못생긴
+  { branch: 6,  row: 1, col: 3 }, // 정오
+  { branch: 0,  row: 2, col: 0 }, // 아들
+  { branch: 7,  row: 2, col: 3 }, // 아직은 아님
+  { branch: 11, row: 3, col: 0 }, // 하이
+  { branch: 10, row: 3, col: 1 }, // 쑤
+  { branch: 9,  row: 3, col: 2 }, // 단일한
   { branch: 8,  row: 3, col: 3 }, // 申
 ];
 
@@ -46,7 +46,7 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
   const shenBranchName = BRANCH_NAMES[chart.shenGongBranch] || '';
   const dx = chart.daXians?.[chart.currentDaXianIndex];
 
-  // 把每个宫位组织成 12 个格子，按布局画
+  // 각 궁을 12개의 그리드로 구성하고 레이아웃에 따라 그려보세요.
   const cells = ZHIWEI_LAYOUT.map(slot => {
     const palace = chart.palaces.find(p => p.branch === slot.branch);
     const majors = palace?.stars.filter(s => s.type === 'major') ?? [];
@@ -55,14 +55,14 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
     return { ...slot, palace, majors, isMing, isShen };
   });
 
-  // 卡片尺寸：680x420（适合微信缩略 + 朋友圈）
+  // 카드 크기: 680x420(WeChat 썸네일 + Moments에 적합)
   return (
     <div id="share-card" style={{
       width: '680px',
       height: '420px',
       background: 'linear-gradient(135deg, #fef9eb 0%, #f7e8c4 60%, #efd8a0 100%)',
       padding: '20px 28px',
-      fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Microsoft JhengHei", sans-serif',
+      fontFamily: '"Malgun Gothic", "Apple SD Gothic Neo", sans-serif',
       position: 'relative',
       boxSizing: 'border-box',
       borderRadius: '14px',
@@ -90,21 +90,21 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
             background: 'linear-gradient(135deg, #d4a948 0%, #b8922a 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'white', fontSize: '15px', fontWeight: 700,
-          }}>紫</div>
+          }}>{koNode("보라색")}</div>
           <div>
-            <div style={{ fontSize: '15px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.12em', lineHeight: 1.2 }}>紫微命盘</div>
-            <div style={{ fontSize: '9px', color: '#a89b7c', letterSpacing: '0.18em', marginTop: '2px' }}>倪海厦正宗 · ZI WEI</div>
+            <div style={{ fontSize: '15px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.12em', lineHeight: 1.2 }}>{koNode("자미두수 명반")}</div>
+            <div style={{ fontSize: '9px', color: '#a89b7c', letterSpacing: '0.18em', marginTop: '2px' }}>{koNode("니하이샤 정통 · ZI WEI")}</div>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
           <div style={{ fontSize: '10px', color: '#6b5d3f', letterSpacing: '0.05em' }}>
-            {birth.year}年{birth.month}月{birth.day}日 · {birth.hour.padStart(2,'0')}:{birth.minute.padStart(2,'0')}
+            {koNode(birth.year)}{koNode("년")}{koNode(birth.month)}{koNode("월")}{koNode(birth.day)}{koNode("일 ·")}{koNode(birth.hour.padStart(2,'0'))}:{koNode(birth.minute.padStart(2,'0'))}
             <span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>
-            {birth.gender === 'male' ? '男命' : '女命'}
-            {birth.city && <><span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>{birth.city}</>}
+            {koNode(birth.gender === 'male' ? '男命' : '女命')}
+            {koNode(birth.city && <><span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>{koNode(birth.city)}</>)}
           </div>
           <div style={{ fontSize: '8px', color: '#b8922a', letterSpacing: '0.08em', marginTop: '2px' }}>
-            {SITE_HOST}
+            {koNode(SITE_HOST)}
           </div>
         </div>
       </div>
@@ -125,8 +125,8 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
           gap: '3px',
           position: 'relative',
         }}>
-          {cells.map((cell, i) => {
-            // 中央 4 个格子（row 1-2, col 1-2）合并为中心说明区
+          {koNode(cells.map((cell, i) => {
+            // 4개의 중앙 그리드(1-2행, 1-2열)가 중앙 설명 영역으로 병합됩니다.
             if ((cell.row === 1 || cell.row === 2) && (cell.col === 1 || cell.col === 2)) return null;
             return (
               <div key={i} style={{
@@ -153,10 +153,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                   alignItems: 'center',
                 }}>
                   <span style={{ fontWeight: cell.isMing ? 700 : 400 }}>
-                    {cell.palace?.name || ''}
-                    {cell.isShen ? '·身' : ''}
+                    {koNode(cell.palace?.name || '')}
+                    {koNode(cell.isShen ? '·身' : '')}
                   </span>
-                  <span style={{ fontSize: '7px', opacity: 0.7 }}>{BRANCH_NAMES[cell.branch]}</span>
+                  <span style={{ fontSize: '7px', opacity: 0.7 }}>{koNode(BRANCH_NAMES[cell.branch])}</span>
                 </div>
                 {/* 主星 */}
                 <div style={{
@@ -167,7 +167,7 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                   flex: 1,
                   justifyContent: 'center',
                 }}>
-                  {cell.majors.length > 0 ? cell.majors.slice(0, 2).map((s, j) => (
+                  {koNode(cell.majors.length > 0 ? cell.majors.slice(0, 2).map((s, j) => (
                     <div key={j} style={{
                       fontSize: '11px',
                       fontWeight: 600,
@@ -175,15 +175,15 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                       letterSpacing: '0.02em',
                       lineHeight: 1.1,
                     }}>
-                      {s.name}{s.siHua ? <span style={{ fontSize: '8px', color: '#c45a2d', marginLeft: '1px' }}>{s.siHua}</span> : ''}
+                      {koNode(s.name)}{koNode(s.siHua ? <span style={{ fontSize: '8px', color: '#c45a2d', marginLeft: '1px' }}>{koNode(s.siHua)}</span> : '')}
                     </div>
                   )) : (
-                    <div style={{ fontSize: '9px', color: '#a89b7c', fontStyle: 'italic' }}>空宫</div>
-                  )}
+                    <div style={{ fontSize: '9px', color: '#a89b7c', fontStyle: 'italic' }}>{koNode("공궁")}</div>
+                  ))}
                 </div>
               </div>
             );
-          })}
+          }))}
 
           {/* 中央说明区（占据 4 个格子）*/}
           <div style={{
@@ -198,10 +198,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
             borderRadius: '4px',
           }}>
             <div style={{ fontSize: '8px', color: '#a89b7c', letterSpacing: '0.2em', marginBottom: '4px' }}>ZI WEI</div>
-            <div style={{ fontSize: '14px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.1em' }}>紫微斗数</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '6px' }}>命宫 · {mingBranchName}</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f' }}>身宫 · {shenBranchName}</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '4px', fontWeight: 600 }}>{chart.wuxingJuName}</div>
+            <div style={{ fontSize: '14px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.1em' }}>{koNode("자미두수")}</div>
+            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '6px' }}>{koNode("명궁 ·")}{koNode(mingBranchName)}</div>
+            <div style={{ fontSize: '10px', color: '#6b5d3f' }}>{koNode("신궁 ·")}{koNode(shenBranchName)}</div>
+            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '4px', fontWeight: 600 }}>{koNode(chart.wuxingJuName)}</div>
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {/* 命宫主星 */}
           <div>
-            <div style={{ fontSize: '10px', color: '#a89b7c', letterSpacing: '0.25em', marginBottom: '2px' }}>命 宫 · {mingBranchName}</div>
+            <div style={{ fontSize: '10px', color: '#a89b7c', letterSpacing: '0.25em', marginBottom: '2px' }}>{koNode("명나라 궁 ·")}{koNode(mingBranchName)}</div>
             <div style={{
               fontSize: '52px',
               fontWeight: 800,
@@ -217,10 +217,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
               letterSpacing: '0.03em',
               lineHeight: 1,
               marginBottom: '12px',
-            }}>{mingStarStr}</div>
+            }}>{koNode(mingStarStr)}</div>
 
             {/* 高亮 */}
-            {highlight && (
+            {koNode(highlight && (
               <div style={{
                 fontSize: '12px',
                 color: '#5b4c2e',
@@ -231,38 +231,32 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                 borderRadius: '4px',
                 letterSpacing: '0.04em',
                 marginBottom: '12px',
-              }}>{highlight}</div>
-            )}
+              }}>{koNode(highlight)}</div>
+            ))}
           </div>
 
           {/* 当前大限 + slogan */}
           <div>
-            {dx && (
+            {koNode(dx && (
               <div style={{
                 fontSize: '11px',
                 color: '#3d2f10',
                 marginBottom: '10px',
                 letterSpacing: '0.05em',
               }}>
-                <span style={{ color: '#a89b7c' }}>当前大限 </span>
-                <span style={{ fontWeight: 600 }}>{dx.startAge}–{dx.endAge} 岁 · {dx.palaceName}</span>
+                <span style={{ color: '#a89b7c' }}>{koNode("현재대한")}</span>
+                <span style={{ fontWeight: 600 }}>{koNode(dx.startAge)}–{koNode(dx.endAge)}{koNode("년 ·")}{koNode(dx.palaceName)}</span>
               </div>
-            )}
+            ))}
             <div style={{
               padding: '10px 12px',
               background: 'linear-gradient(135deg, rgba(212,169,72,0.18) 0%, rgba(184,146,42,0.08) 100%)',
               border: '1px solid rgba(184,146,42,0.3)',
               borderRadius: '6px',
             }}>
-              <div style={{ fontSize: '11px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4 }}>
-                紫微为门 · 天地人为路
-              </div>
-              <div style={{ fontSize: '10px', color: '#8b6a14', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4, marginTop: '2px' }}>
-                倪海厦为师 · AI 答疑伴学
-              </div>
-              <div style={{ fontSize: '8px', color: '#a89b7c', letterSpacing: '0.15em', marginTop: '4px' }}>
-                扫码起你的命盘 →
-              </div>
+              <div style={{ fontSize: '11px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4 }}>{koNode("자미는 문이다 · 하늘과 땅과 사람은 길이다")}</div>
+              <div style={{ fontSize: '10px', color: '#8b6a14', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4, marginTop: '2px' }}>{koNode("니하이샤는 선생님 · AI 질의응답 동반자입니다")}</div>
+              <div style={{ fontSize: '8px', color: '#a89b7c', letterSpacing: '0.15em', marginTop: '4px' }}>{koNode("코드를 스캔하여 명반을 받으세요 →")}</div>
             </div>
           </div>
         </div>
@@ -271,7 +265,7 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
   );
 }
 
-/** 截图工具：把上面的 div 转成 PNG dataURL */
+/* * 캡처 도구: 위 div를 PNG 데이터URL로 변환 */
 export async function captureShareCard(): Promise<string | null> {
   try {
     const html2canvas = (await import('html2canvas')).default;

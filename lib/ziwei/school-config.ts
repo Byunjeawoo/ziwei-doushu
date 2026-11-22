@@ -1,59 +1,58 @@
-/**
- * 排盘流派配置 — 9 类排盘流派开关 + 默认值 + 持久化
+/* *
+ * 배반 장르 구성 — 배반 장르 전환 9개 카테고리 + 기본값 + 지속성
  *
- * 数据源：按通行口径整理（详见 docs/school-alignment.md）
+ * 데이터 출처: 대중적인 표준에 따라 구성됨(자세한 내용은 docs/school-alignment.md 참조)
  *
- * 用户在 chart 页设置面板切换，立即重新排盘
- */
+ * 사용자가 차트 페이지에서 설정 패널을 전환하고 즉시 배반를 다시 시작합니다. */
 
 import type { BrightnessSchool } from './school-data';
 
-// ─── 9 类流派配置 ───────────────────────────────────────────────────────
+// ─── 9가지 장르 구성 ─────────────────────────────────────────────────
 
-/** 1. 14 主星亮度表 */
+/* * 1. 14개 주성 밝기 측정기 */
 export type BrightnessSchoolOption = 'default' | BrightnessSchool;
 
-/** 2. 庚年四化（5 种变体）*/
+/* * 2. 겐년 사화 (5개 변형) */
 export type GengYearSihua =
-  | 'GYWYT'   // 阳武阴同（主流默认口径，与 iztro 一致）
-  | 'GYWTY'   // 阳武同阴（科忌互换说）
-  | 'GYWFT'   // 阳武府同
-  | 'GYWFX'   // 阳武府相
-  | 'GYWTX';  // 阳武同相
+  | 'GYWYT'   // Yang Wu Yin Tong(주류 기본 구경, iztro와 일치)
+  | 'GYWTY'   // 양오(陽)와 오(吳)는 음과 같다(과기교류론)
+  | 'GYWFT'   // 양우푸 통
+  | 'GYWFX'   // 양우현 총리
+  | 'GYWTX';  // 양우동상
 
-/** 3. 安天马 */
+/* * 3. 천마 */
 export type TianmaSchool = 'year-branch' | 'month-branch';
 
-/** 4. 安天空 */
+/* * 4. 천공 */
 export type TiankongSchool = 'normal' | 'shun-jia-shi';
 
-/** 5. 截空旬空 */
+/* * 5. 절공순공 */
 export type JiekongSchool = 'single' | 'double' | 'zhanyan';
 
-/** 6. 安魁钺 */
+/* * 6. 안쿠이웨 */
 export type KuiyueSchool = 'qs1' | 'qs2' | 'zhong-yiming' | 'network';
 
-/** 7. 安天使天伤 */
+/* * 7. 천사천상 */
 export type TianshiTianshangSchool = 'normal' | 'zhongzhou';
 
-/** 8. 安长生十二神 */
+/* * 8. 안창성의 십이신 */
 export type ChangshengSchool = 'yin-yang-shun-ni' | 'shui-tu' | 'huo-tu';
 
-/** 9. 晚子时处理 */
+/* * 9. 야자시 처리 */
 export type LateZishi =
-  | 'next-day'           // 视为次日（主流默认口径 + 我们当前）
-  | 'current-day'        // 视为当日（倪师派）
-  | 'all-current'        // 日柱当日时柱当日（八字）
-  | 'day-cur-time-next'; // 日柱当日时柱次日（八字）
+  | 'next-day'           // 다음 날로 간주됩니다(주류 기본 구경 + 현재)
+  | 'current-day'        // 같은 날로 간주됩니다(니하이샤 선생 세력).
+  | 'all-current'        // 일별열 현재일시열 현재일(팔자)
+  | 'day-cur-time-next'; // 일별 열 현재 날짜 시간 열 다음 날(팔자)
 
-/** 10. 闰月处理（用户反馈：倪师派要求闰月归下月）*/
+/* * 10. 윤달 처리(사용자 피드백: 윤달에게 다음 달로 돌아가도록 요청하기 위해 니하이샤 선생 전송) */
 export type LeapMonth =
-  | 'split'         // 分半（前 15 天归上月，后 15 天归下月）— ★我们默认 = 主流排盘默认口径「月中分界」（2026-09-05 150 组金标准盘对照：9 张闰月后半月盘唯此口径逐星全同）
-  | 'next-month'    // 整月归下月（倪师派：闰四月当五月）
-  | 'prev-month'    // 整月当本月普通月（闰四月当四月）— 可选口径「视为本月」；早先 2.6 万盘验证针对的是另一套参照引擎，与金标准盘默认口径不一致
-  | 'origin-month'; // 不调整（闰四月仍标闰月，iztro fixLeap=false）
+  | 'split'         // 반으로 나눕니다(처음 15일은 이전 달에 속하고 마지막 15일은 다음 달에 속함) - ★저희 기본값 = 주류 배반 기본 구경 "중간 경계"(2026-09-05 150세트의 골드 표준 디스크 비교: 9개의 윤달 후반 반월 디스크는 이 구경에서 모두 동일합니다)
+  | 'next-month'    // 한 달 전체가 다음 달로 돌아갑니다. (니하이샤 선생 학교: 도약 4월이 5월이 됩니다)
+  | 'prev-month'    // 전체 달은 일반 달로 간주됩니다(윤년 4월은 4월로 간주됨). 선택적인 구경은 "이번 달로 간주됩니다". 이전 26,000개의 디스크 검증은 또 다른 참조 엔진 세트에 대한 것이었고 이는 표준 디스크의 기본 구경과 일치하지 않습니다.
+  | 'origin-month'; // 조정 없음(도약 4월은 여전히 윤달, iztro fixLeap=false로 표시됨)
 
-// ─── 完整配置对象 ──────────────────────────────────────────────────────
+// ─── 전체 구성 개체 ─────────────────────────────────────────────────
 
 export interface SchoolConfig {
   brightnessSchool: BrightnessSchoolOption;
@@ -68,39 +67,37 @@ export interface SchoolConfig {
   leapMonth: LeapMonth;
 }
 
-/** 默认配置 = 对齐主流排盘默认口径（辅星六煞杂曜+四化+运限 穷举零差异；闰月口径=整月归本月）*/
-/**
- * ★ 2026-09-05 默认闰月口径 prev-month → split：150 组金标准盘对照，随机 100 盘 0 排星差异，
- * 唯一系统性差异是 9 张闰月后半月盘——金标准盘默认「月中分界」(split)，Metis 旧默认整月归本月；切 split 后逐星全同。
- * 站长 2026-09-05 拍板改默认。algorithm / school-patches / yunxian-palace 的兜底默认都引用这一个常量，别再各写字面量。
- */
+/* *기본 구성 = 주류 배반 기본 구경과 일치(보조성 Liusha Zayao + 사화 + Yunqi, 차이 없음; 윤달 구경 = 전체 달이 이번 달로 돌아옴) */
+/* *
+ * ★ 2026-09-05 기본 윤달 구경 이전 월 → 분할: 금표준 디스크 150 세트 비교, 별 순위 차이가 0인 무작위 100 디스크,
+ * 유일한 체계적 차이점은 9개의 윤달 하반기 디스크 - 표준 디스크의 기본값은 "월 중간 분할"(분할)이고 Metis의 이전 기본 기본값은 전체 월을 이번 달로 반환한다는 것입니다. 분할 후 별은 동일합니다.
+ * 웹마스터 2026-09-05 기본값을 변경하기로 결정했습니다. 알고리즘 / school-patches / yunxian-palace는 모두 기본적으로 이 상수를 참조하므로 각각 리터럴을 작성하지 마세요. */
 export const DEFAULT_LEAP_MONTH: LeapMonth = 'split';
 
-/** 四个合法闰月口径，供运行时校验（引擎对非法 policy 抛 RangeError，分享链接解析在到达引擎前回落默认）。 */
+/* * 런타임 확인을 위한 4개의 합법적인 윤달 구경(엔진은 불법 정책에 대해 RangeError를 발생시키고 공유 링크 확인은 엔진에 도달하기 전에 기본값으로 돌아갑니다). */
 const LEAP_MONTH_VALUES: readonly LeapMonth[] = ['split', 'prev-month', 'next-month', 'origin-month'];
 
 export const SCHOOL_DEFAULT_CONFIG: SchoolConfig = {
-  brightnessSchool: 'default',           // = 《斗数全书》（algorithm.ts 把 'default' 当 QS 用，对齐主流排盘默认口径，10-20 改）
-  gengYearSihua: 'GYWYT',                // 阳武阴同
-  tianmaSchool: 'year-branch',           // 依据年支
-  tiankongSchool: 'normal',              // 常规
-  jiekongSchool: 'double',               // 正副双星
-  kuiyueSchool: 'qs1',                   // 斗数全书歌诀理解1
-  tianshiTianshang: 'normal',            // 常规
-  changshengSchool: 'yin-yang-shun-ni',  // 区分阴阳顺逆
-  lateZishi: 'next-day',                 // 视为次日
+  brightnessSchool: 'default',           // = "Doushu Quanshu"(algorithm.ts는 '기본값'을 QS로 사용하고 주류 배반 기본 구경과 일치하며 10-20 변경)
+  gengYearSihua: 'GYWYT',                // 양우인통
+  tianmaSchool: 'year-branch',           // 연간 지출에 따라
+  tiankongSchool: 'normal',              // 일반
+  jiekongSchool: 'double',               // 기본 및 보조 별
+  kuiyueSchool: 'qs1',                   // 두서 전곡의 이해 1
+  tianshiTianshang: 'normal',            // 일반
+  changshengSchool: 'yin-yang-shun-ni',  // 음과 양을 구별하라
+  lateZishi: 'next-day',                 // 다음날로 간주
   leapMonth: DEFAULT_LEAP_MONTH,         // 闰月分半（主流排盘默认口径「月中分界」，150 组金标准盘对照验证）
 };
 
-// ─── localStorage 持久化 key ───────────────────────────────────────────
+// ─── localStorage 지속성 키 ────────────────────────────────────────
 export const SCHOOL_CONFIG_LS_KEY = 'ziwei-school-config-v1';
-/** 2026-09-05 闰月默认 prev-month→split 的一次性迁移标记（见 loadSchoolConfig） */
+/* * 2026-09-05 윤달 기본 이전-월→일회성 천이 표시 분할(loadSchoolConfig 참조) */
 export const SCHOOL_LEAP_MIGRATED_KEY = 'ziwei-school-leap-split-migrated';
 
-/**
- * ★ 2026-10-20 键名统一改名：早期版本存在 `ziwei-<旧名>-config-v1` / `ziwei-<旧名>-leap-split-migrated`。
- * 新键还没有时，把旧键里的流派配置（认 brightnessSchool 字段）与闰月迁移标记搬过来、删掉旧键；只认这两种形状，不碰别的键。
- */
+/* *
+ * ★ 2026-10-20 키 이름이 일관되게 이름이 변경되었습니다. `ziwei-<旧名>-config-v1` / `ziwei-<旧名>-leap-split-migrated`는 이전 버전에 존재합니다.
+ * 새 키를 아직 사용할 수 없는 경우 장르 구성(brightnessSchool 필드 참조)과 이전 키의 윤달천이 표시를 이동하고 이전 키를 삭제합니다. 이 두 모양만 인식하고 다른 키는 건드리지 마세요. */
 function migrateLegacyKeys(): void {
   try {
     const keys: string[] = [];
@@ -125,10 +122,9 @@ function migrateLegacyKeys(): void {
   } catch { /* localStorage 被禁：照旧走默认 */ }
 }
 
-/**
- * 读 localStorage 配置（安全 fallback 到默认）
- * 浏览器端调用，服务端返回默认
- */
+/* *
+ * localStorage 구성 읽기(기본값으로 안전하게 대체)
+ * 브라우저 측에서 호출, 서버 측에서는 기본 돌아가기 */
 export function loadSchoolConfig(): SchoolConfig {
   if (typeof window === 'undefined') return SCHOOL_DEFAULT_CONFIG;
   migrateLegacyKeys();
@@ -136,8 +132,8 @@ export function loadSchoolConfig(): SchoolConfig {
     const raw = localStorage.getItem(SCHOOL_CONFIG_LS_KEY);
     if (!raw) return SCHOOL_DEFAULT_CONFIG;
     const parsed = JSON.parse(raw) as Partial<SchoolConfig>;
-    // ★ 2026-09-05 一次性迁移：旧默认 prev-month 是被整份存进 localStorage 的（抽屉存完整配置），分不清「默认」还是「手选」；
-    //   而旧选项本身就标着「默认」，选它的人要的也是对齐默认口径 → 统一迁到新默认 split，只迁一次（迁移标记），之后再手选 prev-month 就尊重
+    // ★ 2026-09-05 일회성 천이: 이전 기본 이전 월은 전체적으로 localStorage에 저장되며(드로어는 전체 구성을 저장함) "기본"인지 "수동 선택"인지 확실하지 않습니다.
+    // 이전 옵션 자체는 "기본값"으로 표시되어 있으며 그것을 선택하는 사람도 기본 구경을 정렬하고 싶어 → 새로운 기본 분할로 균일하게 마이그레이션하고 한 번만 마이그레이션 (천이 표시) 한 다음 이전-월을 수동으로 선택하여 준수합니다.
     if (parsed.leapMonth === 'prev-month' && !localStorage.getItem(SCHOOL_LEAP_MIGRATED_KEY)) {
       parsed.leapMonth = DEFAULT_LEAP_MONTH;
       try { localStorage.setItem(SCHOOL_LEAP_MIGRATED_KEY, '1'); localStorage.setItem(SCHOOL_CONFIG_LS_KEY, JSON.stringify({ ...SCHOOL_DEFAULT_CONFIG, ...parsed })); } catch { /* noop */ }
@@ -148,18 +144,17 @@ export function loadSchoolConfig(): SchoolConfig {
   }
 }
 
-/**
- * ★ 2026-10-18 默认项与它底层的那张表只留一项（站长：两项排出来一样，别并排摆）。
- * ★ 2026-10-20 默认改成《斗数全书》（主流排盘默认口径，见 algorithm.ts setBrightnessSchool），归并方向随之改：
- *   手选 QS（本机存的、分享链接 bs=QS）一律当默认，勾落在「《斗数全书》派（默认）」；
- *   XD2 不再归并——它现在是单独一项「现代修正 v2」，手选了就尊重。
- *   10-18 到 10-20 之间被归成 'default' 的老 XD2 选择分不出来，随默认一起变成全书（站长定：跟默认口径走）。
- */
+/* *
+ * ★ 2026-10-18 기본 항목과 기본 테이블 사이에 항목이 하나만 남습니다. (웹마스터: 두 항목을 동일하게 배열해야 하며 나란히 배치하지 마십시오.)
+ * ★ 2026-10-20 기본값은 "Doushu Quanshu"(주류 배반 기본 구경, Algorithm.ts setBrightnessSchool 참조)로 변경되고 그에 따라 병합 방향이 변경됩니다.
+ * 직접 선택한 QS(로컬에 저장됨, 공유 링크 bs=QS)는 항상 기본값으로 사용해야 하며 확인 표시는 "Doushu Quanshu" 학교(기본값)에 있습니다.
+ * XD2는 더 이상 병합되지 않습니다. 이제 별도의 "Modern Modifier v2"가 되며 직접 선택한 경우에도 적용됩니다.
+ * 10-18과 10-20 사이에서 '기본'으로 분류된 이전 XD2 선택 항목은 구별할 수 없으며 기본과 함께 전체 책이 됩니다(웹마스터가 결정: 기본 구경을 따릅니다). */
 function normalizeBrightness(cfg: SchoolConfig): SchoolConfig {
   return cfg.brightnessSchool === 'QS' ? { ...cfg, brightnessSchool: 'default' } : cfg;
 }
 
-/** 保存配置到 localStorage */
+/* * localStorage에 구성 저장 */
 export function saveSchoolConfig(cfg: SchoolConfig): void {
   if (typeof window === 'undefined') return;
   try {
@@ -167,25 +162,24 @@ export function saveSchoolConfig(cfg: SchoolConfig): void {
   } catch { /* localStorage 满或被禁 */ }
 }
 
-/** 重置为默认 */
+/* * 기본값으로 재설정 */
 export function resetSchoolConfig(): void {
   if (typeof window === 'undefined') return;
   try { localStorage.removeItem(SCHOOL_CONFIG_LS_KEY); } catch { /* noop */ }
 }
 
-// ─── 配置 → URL query 双向转换（用于分享带流派的命盘）────────────────────
+// ───구성 → URL 쿼리 양방향 변환(장르 명반의 공유용)────────────────────
 
-/**
- * 流派 URL 参数 key 全集 — 与 configToParams 输出一一对应，10 类配置 10 个 key。
+/* *
+ * 장르 URL 매개변수 키의 전체 세트 - configToParams 출력과 일대일 대응, 10개 카테고리가 10개 키를 구성합니다.
  *
- * ★ 2026-06-12 修「分享链接丢闰月口径」：chart 页此前两处手写 key 数组判断
- *   「URL 是否带流派参数」，都漏了 'lm'（闰月归属）——用户改成 next-month 后分享，
- *   对方打开 ?lm=next-month 被无视、按默认闰月口径排出不同的盘。
- *   今后判断一律复用本常量；configToParams 加字段时必须同步加这里。
- */
+ * ★ 2026-06-12 "공유 링크가 윤달 구경을 잃음" 수정: 차트 페이지의 처음 두 위치에 손으로 쓴 키 배열 판단
+ * "URL에 장르 매개변수가 포함되어 있는지 여부", 'lm'(윤달가 속한)이 누락됨 - 사용자가 다음 달 공유로 변경한 후,
+ * 상대방이 ?lm=next-month를 열면 무시되고 기본 윤달 구경에 따라 다른 디스크가 배출됩니다.
+ * 이 상수는 향후 판단에 재사용됩니다. configToParams에 필드를 추가할 때 여기에 동기식으로 추가해야 합니다. */
 export const SCHOOL_PARAM_KEYS = ['bs', 'gys', 'tm', 'tk', 'jk', 'ky', 'tst', 'cs', 'lz', 'lm'] as const;
 
-/** SchoolConfig → URL params（紧凑形式：?bs=qs&sh=GYWTY...）*/
+/* * SchoolConfig → URL 매개변수(간단한 형식: ?bs=qs&sh=GYWTY...) */
 export function configToParams(cfg: SchoolConfig): Record<string, string> {
   const out: Record<string, string> = {};
   if (cfg.brightnessSchool !== 'default') out.bs = cfg.brightnessSchool;
@@ -197,11 +191,11 @@ export function configToParams(cfg: SchoolConfig): Record<string, string> {
   if (cfg.tianshiTianshang !== 'normal') out.tst = cfg.tianshiTianshang;
   if (cfg.changshengSchool !== 'yin-yang-shun-ni') out.cs = cfg.changshengSchool;
   if (cfg.lateZishi !== 'next-day') out.lz = cfg.lateZishi;
-  if (cfg.leapMonth !== DEFAULT_LEAP_MONTH) out.lm = cfg.leapMonth;   // 老分享链接不带 lm 的，现按新默认 split 解析（与主流排盘默认口径一致）
+  if (cfg.leapMonth !== DEFAULT_LEAP_MONTH) out.lm = cfg.leapMonth;   // lm이 없는 이전 공유 링크는 이제 새로운 기본 분할에 따라 구문 분석됩니다(주류 배반 기본 구경과 동일).
   return out;
 }
 
-/** URLSearchParams → SchoolConfig（缺省字段用默认值填充）*/
+/* * URLSearchParams → SchoolConfig(기본 필드는 기본값으로 채워짐) */
 export function paramsToConfig(params: URLSearchParams): SchoolConfig {
   return normalizeBrightness({
     brightnessSchool: (params.get('bs') as BrightnessSchoolOption) || SCHOOL_DEFAULT_CONFIG.brightnessSchool,
@@ -213,77 +207,77 @@ export function paramsToConfig(params: URLSearchParams): SchoolConfig {
     tianshiTianshang: (params.get('tst') as TianshiTianshangSchool) || SCHOOL_DEFAULT_CONFIG.tianshiTianshang,
     changshengSchool: (params.get('cs') as ChangshengSchool) || SCHOOL_DEFAULT_CONFIG.changshengSchool,
     lateZishi: (params.get('lz') as LateZishi) || SCHOOL_DEFAULT_CONFIG.lateZishi,
-    // 分享链接的 lm 可能是任意字符串（老链接/手改 URL）；引擎现在对非法 policy 抛
-    // RangeError，这里先校验，坏值回落默认口径，别让一张坏链接崩掉整页。
+    // 공유 링크의 lm은 임의의 문자열(이전 링크/수동으로 변경된 URL)일 수 있습니다. 이제 엔진이 불법적인 정책을 던집니다.
+    // RangeError, 먼저 여기를 확인하세요. 잘못된 값은 기본 구경으로 대체됩니다. 잘못된 링크로 인해 전체 페이지가 접히지 않도록 하세요.
     leapMonth: LEAP_MONTH_VALUES.includes(params.get('lm') as LeapMonth)
       ? (params.get('lm') as LeapMonth)
       : SCHOOL_DEFAULT_CONFIG.leapMonth,
   });
 }
 
-// ─── UI 显示用：每个开关的所有选项 + 中文标签 ──────────────────────────
+// ─── UI 표시: 각 스위치의 모든 옵션 + 중국어 라벨 ──────────────────────────
 
 export const SCHOOL_OPTIONS = {
-  // ★ 2026-06-17 统一格式(用户要求):每组【默认项】固定排第一,且 desc 统一以「默认 · xxx」开头
+  // ★ 2026-06-17 통합 형식(사용자 요구 사항): [기본 항목]의 각 그룹은 고정적으로 첫 번째 순위가 지정되고, 설명은 균일하게 "기본 · xxx"로 시작됩니다.
   brightnessSchool: [
-    // ★ 10-20 默认项 = 《斗数全书》（主流排盘默认口径「星曜亮度依据斗数全书」），底层就是 QS 表，所以不再另列 QS
-    { value: 'default', label: '《斗数全书》派', desc: '默认 · 与主流排盘软件默认一致' },
-    { value: 'XD2', label: '现代修正 v2', desc: '现代修订亮度表（第二版）' },
-    { value: 'XD1', label: '现代修正 v1', desc: '现代修订亮度表（第一版）' },
-    { value: 'ZZ', label: '中州派', desc: '中州派理论' },
+    // ★ 10-20 기본 항목 = "Dou Shu Quanshu"(주류 배반 기본 구경 "성요 밝기는 Dou Shu Quanshu"), 하단 레이어는 QS 테이블이므로 QS를 별도로 나열할 필요가 없습니다.
+    { value: 'default', label: "\"Dou Shu Quanshu\" 학교", desc: "기본값 · 주류 배반 소프트웨어의 기본값과 일치" },
+    { value: 'XD2', label: "최신 수정 v2", desc: "현대 개정 광도표(제2판)" },
+    { value: 'XD1', label: "최신 수정 v1", desc: "현대 개정 광도표(1판)" },
+    { value: 'ZZ', label: "중저우 학교", desc: "중주학파론" },
   ],
   gengYearSihua: [
-    { value: 'GYWYT', label: '阳武阴同', desc: '默认 · 与 iztro / 主流一致' },
-    { value: 'GYWTY', label: '阳武同阴', desc: '科忌互换说' },
-    { value: 'GYWFT', label: '阳武府同' },
-    { value: 'GYWFX', label: '阳武府相' },
-    { value: 'GYWTX', label: '阳武同相' },
+    { value: 'GYWYT', label: "양우인통", desc: "기본값 · iztro/mainstream과 일치" },
+    { value: 'GYWTY', label: "양우와 인", desc: "코지교류론" },
+    { value: 'GYWFT', label: "양우푸 통" },
+    { value: 'GYWFX', label: "양우현 총리" },
+    { value: 'GYWTX', label: "양우동상" },
   ],
   tianmaSchool: [
-    { value: 'year-branch', label: '依据年支', desc: '默认 · 年支起天马' },
-    { value: 'month-branch', label: '依据月支' },
+    { value: 'year-branch', label: "연간 지출에 따라", desc: "기본 · 연간 지원 천마" },
+    { value: 'month-branch', label: "월별 지원액에 따라" },
   ],
   tiankongSchool: [
-    { value: 'normal', label: '常规排法', desc: '默认 · 常规起天空' },
-    { value: 'shun-jia-shi', label: '顺加生时' },
+    { value: 'normal', label: "기존 배열", desc: "기본값 · 천공부터 정상 시작" },
+    { value: 'shun-jia-shi', label: "슌가가 태어났을 때" },
   ],
   jiekongSchool: [
-    { value: 'double', label: '正副双星', desc: '默认 · 正副双星并用' },
-    { value: 'single', label: '常规单星' },
-    { value: 'zhanyan', label: '占验派' },
+    { value: 'double', label: "기본 및 보조 별", desc: "기본값 · 기본 별과 보조 별을 모두 사용" },
+    { value: 'single', label: "기존의 단일 별" },
+    { value: 'zhanyan', label: "잔우종" },
   ],
   kuiyueSchool: [
-    { value: 'qs1', label: '《斗数全书》理解 1', desc: '默认 · 全书歌诀理解一' },
-    { value: 'qs2', label: '《斗数全书》理解 2', desc: '差异仅在庚辛壬癸年生人' },
-    { value: 'zhong-yiming', label: '钟义明先生书籍排法' },
-    { value: 'network', label: '网络流传排法' },
+    { value: 'qs1', label: "『도서전서』의 이해 1", desc: "기본·노래집 전체의 이해 1" },
+    { value: 'qs2', label: "『두술전서』의 이해 2", desc: "차이점은 Geng, Xinren 및 Gui 년에 태어난 사람들에게만 있습니다." },
+    { value: 'zhong-yiming', label: "정예밍 선생님의 도서 정리" },
+    { value: 'network', label: "네트워크 확산 배치" },
   ],
   tianshiTianshang: [
-    { value: 'normal', label: '常规排法', desc: '默认 · 身宫 ±5 位' },
-    { value: 'zhongzhou', label: '中州派排法', desc: '生月奇偶 × 性别 交换' },
+    { value: 'normal', label: "기존 배열", desc: "기본값 · 신궁 ±5자리" },
+    { value: 'zhongzhou', label: "중주 스타일 배열 방법", desc: "태어난 달 홀짝 × 성별 교환" },
   ],
   changshengSchool: [
-    { value: 'yin-yang-shun-ni', label: '区分阴阳顺逆', desc: '默认 · 阴阳顺逆起长生' },
-    { value: 'shui-tu', label: '水土共长生', desc: '土五局起点 = 水二局起点 (申)' },
-    { value: 'huo-tu', label: '火土共长生', desc: '土五局起点 = 火六局起点 (寅)' },
+    { value: 'yin-yang-shun-ni', label: "음과 양을 구별하라", desc: "태만·음양은 불멸로 이어진다" },
+    { value: 'shui-tu', label: "물과 흙은 영원히 공존한다", desc: "토오국 시작점 = 수이국 시작점(응용프로그램)" },
+    { value: 'huo-tu', label: "불과 땅은 영원히 함께 산다", desc: "토오국 시작점 = 화육국 시작점(음)" },
   ],
   lateZishi: [
-    { value: 'next-day', label: '视为次日', desc: '默认 · 主流做法' },
-    { value: 'current-day', label: '视为当日', desc: '倪师派' },
-    { value: 'all-current', label: '日柱当日 / 时柱当日（八字）' },
-    { value: 'day-cur-time-next', label: '日柱当日 / 时柱次日（八字）' },
+    { value: 'next-day', label: "다음날로 간주", desc: "기본 · 주류 실습" },
+    { value: 'current-day', label: "같은 날로 간주", desc: "니하이샤 선생 세력" },
+    { value: 'all-current', label: "일별 열 일/시간 열 일(팔자)" },
+    { value: 'day-cur-time-next', label: "다음 날의 일/시간 컬럼의 일별 컬럼(팔자)" },
   ],
-  // ★ 2026-06-17 全站约定:每组默认选项一律排第一；去「天机」二字(避商标侵权)
-  // ★ 2026-09-05 默认改为分半：主流排盘默认口径「月中分界」，150 组金标准盘对照唯此口径逐星全同
+  // ★ 2026-06-17 사이트 전체 합의: 각 기본 옵션 세트가 첫 번째 순위가 됩니다. "천기"라는 단어를 제거하십시오(상표권 침해를 방지하기 위해).
+  // ★ 2026-09-05 기본값은 절반으로 변경됩니다. 주류 배반 기본 구경 "월중 경계", 150세트의 금 표준 디스크는 비교용으로만 동일한 구경입니다.
   leapMonth: [
-    { value: 'split', label: '视为分半', desc: '默认 · 「月中分界」，与主流排盘软件默认一致（前 15 天归本月 / 后 15 天归下月，150 组对照盘验证）' },
-    { value: 'prev-month', label: '视为本月', desc: '闰四月整月当四月普通月排' },
-    { value: 'next-month', label: '视为下月', desc: '倪师派（闰四月整月当五月排）' },
-    { value: 'origin-month', label: '保持闰月', desc: '不调整，闰四月仍标闰月' },
+    { value: 'split', label: "절반으로 간주", desc: "기본값 · \"월중 경계\", 주류 배반 소프트웨어의 기본값과 일치합니다(처음 15일은 이번 달에 속함/마지막 15일은 다음 달에 속함, 비교 디스크 검증 150세트)" },
+    { value: 'prev-month', label: "이번 달로 간주", desc: "4월의 윤달 전체가 4월의 일반적인 달이다." },
+    { value: 'next-month', label: "다음 달로 간주", desc: "니하이샤 선생 진영 (4월 전체 기간은 5월로 정하겠습니다)" },
+    { value: 'origin-month', label: "윤달 유지", desc: "조정하지 않으면 윤월은 여전히 윤달로 표시됩니다." },
   ],
 } as const;
 
-/** 10 类配置的中文标签（用于 UI 标题）*/
+/* * 10가지 구성 범주에 대한 중국어 라벨(UI 제목용) */
 export const SCHOOL_LABELS: Record<keyof SchoolConfig, string> = {
   brightnessSchool: '星曜亮度表',
   gengYearSihua: '庚年四化',

@@ -4,7 +4,7 @@ import ts from 'typescript';
 
 // Feed real byte chunks through the page's original reader callback.
 const source = readFileSync(new URL('../../app/heming/page.tsx', import.meta.url), 'utf8');
-const start = source.indexOf('  // 表单是否填齐');
+const start = source.indexOf("// 양식이 작성되었나요?");
 const end = source.indexOf('  const cardStyle =', start);
 assert.ok(start >= 0 && end > start);
 const body = `export function makeRun(ctx) {
@@ -41,14 +41,14 @@ async function consume(chunks: Uint8Array[]) {
 async function main() {
   for (const ending of ['\n', '\r\n']) {
     const bytes = new TextEncoder().encode(
-      `data: {"delta":{"text":"你好"}}${ending}${ending}` +
-      `data: {"delta":{"text":"世界"}}${ending}${ending}data: [DONE]${ending}${ending}`,
+      `data: {"delta":{"text":"안녕"}}${ending}${ending}` +
+      `data: {"delta":{"text":"하세요"}}${ending}${ending}data: [DONE]${ending}${ending}`,
     );
-    assert.equal(await consume([bytes]), '你好世界');
+    assert.equal(await consume([bytes]), '안녕하세요');
     for (let cut = 1; cut < bytes.length; cut++) {
-      assert.equal(await consume([bytes.slice(0, cut), bytes.slice(cut)]), '你好世界', `byte split ${cut}`);
+      assert.equal(await consume([bytes.slice(0, cut), bytes.slice(cut)]), '안녕하세요', `byte split ${cut}`);
     }
-    assert.equal(await consume(Array.from(bytes, byte => Uint8Array.of(byte))), '你好世界');
+    assert.equal(await consume(Array.from(bytes, byte => Uint8Array.of(byte))), '안녕하세요');
   }
   console.log('Heming SSE byte-fragment regressions passed');
 }

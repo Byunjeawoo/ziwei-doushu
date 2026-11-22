@@ -39,7 +39,7 @@ const stubRequire = (name: string) => {
 new Function('require', 'exports', output)(stubRequire, exports);
 assert.ok(exports.default);
 const html = renderToStaticMarkup(exports.default());
-assert.equal((html.match(/>本命<\/button>/g) ?? []).length, 1,
+assert.equal((html.match(/>본명<\/button>/g) ?? []).length, 1,
   'generated chart must expose exactly one natal/time navigation, owned by ChartBoard');
 const panelClass = html.match(/class="([^"]*card-glass[^"]*)"/g)?.find(x => x.includes('flex-col')) ?? '';
 assert.ok(panelClass.includes('h-[min(44rem,80dvh)]'), 'panel must have a viewport-bounded height');

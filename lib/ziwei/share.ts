@@ -6,7 +6,7 @@ function isValidLongitude(longitude: number): boolean {
   return longitude >= -180 && longitude <= 180;
 }
 
-/** 表单预览和提交共用：北京时间 + 经度修正 + 出生日期对应的均时差。 */
+/* * 양식 미리보기 및 제출 공통 : 베이징 시간 + 경도 보정 + 생년월일에 해당하는 평균 시차. */
 export function formToTrueSolarTime(form: Pick<BirthFormState, 'year' | 'month' | 'day' | 'clockHour' | 'clockMinute' | 'province' | 'longitude'>) {
   return calculateTrueSolarTime({
     year: parseInt(form.year) || 0,
@@ -18,20 +18,19 @@ export function formToTrueSolarTime(form: Pick<BirthFormState, 'year' | 'month' 
   });
 }
 
-/** BirthFormState → BirthInfo
+/* * BirthFormState → BirthInfo
  *
- * 子时规则（倪海厦体系/三合派标准，以下均按真太阳时）：
- * · 23:00-23:59 = 晚子时，**按次日**排盘（日期 +1）
- * · 00:00-00:59 = 早子时，按本日排盘
- * 这与「时辰支同为子(0)」并不冲突——子时分早晚两段，需要在日期上区分。
- */
+ * 자시 규칙(니하이샤 시스템/삼합파 표준, 다음은 모두 진태양시에 따릅니다):
+ * · 23:00-23:59 = 야자시, **다음날까지** 배반 (날짜 +1)
+ * · 00:00-00:59 = 조자시, 오늘의 배반 기준
+ * "시진 브랜치는 동일 자식(0)"과 충돌하지 않습니다. - 자시는 오전과 저녁 섹션으로 나누어 날짜별로 구분해야 합니다. */
 export function formToBirthInfo(form: BirthFormState): BirthInfo {
   let y = parseInt(form.year) || 0;
   let m = parseInt(form.month) || 0;
   let d = parseInt(form.day) || 0;
   let hour = 0;
 
-  // 晚子时换日按真太阳时判定，与时辰支同一口径（见 true-solar-time.ts 的 resolveZiweiDayOffset）。
+  // 야자시 일 변경은 시진과 동일한 구경인 진태양시에 따라 결정됩니다(true-solar-time.ts의 resolveZiweiDayOffset 참조).
   if (!form.unknownTime) {
     const solar = formToTrueSolarTime(form);
     hour = solar.branch;
@@ -52,7 +51,7 @@ export function formToBirthInfo(form: BirthFormState): BirthInfo {
   };
 }
 
-/** BirthFormState → URLSearchParams（用于分享链接） */
+/* * BirthFormState → URLSearchParams(공유 링크의 경우) */
 export function formToSearchParams(form: BirthFormState): URLSearchParams {
   const p = new URLSearchParams();
   if (form.name) p.set('n', form.name);
@@ -72,7 +71,7 @@ export function formToSearchParams(form: BirthFormState): URLSearchParams {
   return p;
 }
 
-/** URLSearchParams → Partial<BirthFormState>，不完整时返回 null */
+/* * URLSearchParams → Partial<BirthFormState>, 돌아가기 불완전한 경우 null */
 export function searchParamsToForm(params: URLSearchParams): Partial<BirthFormState> | null {
   const year = params.get('y');
   const month = params.get('m');

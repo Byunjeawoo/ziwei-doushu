@@ -24,7 +24,7 @@ export function useHistory() {
   const save = useCallback((form: BirthFormState) => {
     const label = [
       form.name,
-      `${form.year}年${form.month}月${form.day}日`,
+      `${form.year}년${form.month}월${form.day}일`,
       form.city || form.province || '',
       form.gender === 'male' ? '男' : '女',
     ].filter(Boolean).join(' · ');
@@ -37,7 +37,7 @@ export function useHistory() {
     };
 
     setHistory(prev => {
-      // 去重：相同出生年月日+性别+时辰视为同一条记录
+      // 중복 제거 : 생년 월일 + 성별 + 시진 의 동일한 레코드는 동일한 레코드로 간주됩니다.
       const deduped = prev.filter(e =>
         !(e.form.year === form.year &&
           e.form.month === form.month &&

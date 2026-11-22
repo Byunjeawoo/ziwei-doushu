@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { motion } from 'framer-motion';
 import type { ZiweiChart } from '@/lib/ziwei/types';
 import { detectPatterns } from '@/lib/ziwei/patterns';
@@ -22,12 +23,10 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
       className="card-glass rounded-xl p-4 mb-4"
     >
       <div className="text-[10px] tracking-widest mb-3 flex items-center gap-2" style={{ color: 'var(--t-faint)' }}>
-        <span style={{ color: 'var(--t-gold)', opacity: 0.6 }}>◉</span>
-        格局识别（严格古书条件）
-        <span className="text-[9px] ml-auto" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{patterns.length}个</span>
+        <span style={{ color: 'var(--t-gold)', opacity: 0.6 }}>◉</span>{koNode("격국 식별(엄격한 고서 조건)")}<span className="text-[9px] ml-auto" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{koNode(patterns.length)}{koNode("에")}</span>
       </div>
       <div className="space-y-2">
-        {patterns.map((p, i) => {
+        {koNode(patterns.map((p, i) => {
           const st = LevelStyle[p.level];
           return (
             <motion.div
@@ -39,54 +38,53 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${st.dot}`} />
-                <span className={`text-[11px] font-medium ${st.label}`}>{p.name}</span>
+                <span className={`text-[11px] font-medium ${st.label}`}>{koNode(p.name)}</span>
                 <div className="flex gap-1 ml-auto">
-                  {p.palaces.slice(0, 2).map(pa => (
+                  {koNode(p.palaces.slice(0, 2).map(pa => (
                     <span key={pa} className={`text-[8px] px-1.5 py-px rounded-full border ${st.badge}`}>
-                      {pa.replace('宫', '')}
+                      {koNode(pa.replace('宫', ''))}
                     </span>
-                  ))}
+                  )))}
                 </div>
               </div>
 
               <p className="text-[10px] leading-relaxed pl-3.5" style={{ color: 'var(--t-text2)' }}>
-                {p.description}
+                {koNode(p.description)}
               </p>
 
-              {p.conditions && (
+              {koNode(p.conditions && (
                 <div className="mt-2 pl-3.5 space-y-0.5">
-                  {p.conditions.required.length > 0 && (
+                  {koNode(p.conditions.required.length > 0 && (
                     <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium" style={{ color: 'var(--t-gold)' }}>必须</span>
+                      <span className="font-medium" style={{ color: 'var(--t-gold)' }}>{koNode("필수")}</span>
                       <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.required.join('、')}
+                      {koNode(p.conditions.required.join('、'))}
                     </div>
-                  )}
-                  {p.conditions.bonus && p.conditions.bonus.length > 0 && (
+                  ))}
+                  {koNode(p.conditions.bonus && p.conditions.bonus.length > 0 && (
                     <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium text-emerald-500">加分</span>
+                      <span className="font-medium text-emerald-500">{koNode("추가 포인트")}</span>
                       <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.bonus.join('、')}
+                      {koNode(p.conditions.bonus.join('、'))}
                     </div>
-                  )}
-                  {p.conditions.breaking && p.conditions.breaking.length > 0 && (
+                  ))}
+                  {koNode(p.conditions.breaking && p.conditions.breaking.length > 0 && (
                     <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium text-orange-500">破格</span>
+                      <span className="font-medium text-orange-500">{koNode("규칙을 어기다")}</span>
                       <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.breaking.join('、')}
+                      {koNode(p.conditions.breaking.join('、'))}
                     </div>
-                  )}
+                  ))}
                 </div>
-              )}
+              ))}
 
-              {p.source && (
-                <div className="text-[9px] mt-1.5 pl-3.5" style={{ color: 'var(--t-faint)', opacity: 0.5 }}>
-                  出处 · {p.source}
+              {koNode(p.source && (
+                <div className="text-[9px] mt-1.5 pl-3.5" style={{ color: 'var(--t-faint)', opacity: 0.5 }}>{koNode("출처 ·")}{koNode(p.source)}
                 </div>
-              )}
+              ))}
             </motion.div>
           );
-        })}
+        }))}
       </div>
     </motion.div>
   );

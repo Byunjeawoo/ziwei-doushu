@@ -1,35 +1,33 @@
-name: 程序问题 / Bug report
-description: 代码跑不起来、报错、页面显示异常
+name: "프로그램 오류"
+description: "실행 오류나 잘못 표시되는 화면을 알려 주세요."
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: |
-        先确认：开源版**不含**任何 `/api/*` 后端接口（AI 解读、合盘分析），这些功能出现 404 是预期行为，需要你自己实现，见 README「快速开始」。排盘本身不需要 API Key。
+      value: "공개 버전에는 AI 해석과 합반 분석용 /api/* 백엔드가 없습니다. 구현하지 않은 API가 404를 반환하는 것은 원본의 동작입니다. 배반 자체에는 API 키가 필요하지 않습니다."
   - type: textarea
     id: steps
     attributes:
-      label: 复现步骤
-      placeholder: |
-        1. npm ci
-        2. npm run dev
-        3. 打开 /chart，选 …… 点 ……
+      label: "재현 방법"
+      placeholder: "실행 명령, 방문한 페이지, 입력값과 누른 버튼"
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: 期望结果
+      label: "예상한 결과"
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: 实际结果（报错信息、截图）
+      label: "실제 결과와 오류 메시지"
     validations:
       required: true
   - type: input
     id: env
     attributes:
-      label: 运行环境
-      placeholder: 例：macOS 15 / Node 22 / Chrome 140
+      label: "실행 환경"
+      placeholder: "예: Windows 11 / Node 22 / Chrome"
+    validations:
+      required: false

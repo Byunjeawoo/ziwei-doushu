@@ -24,7 +24,7 @@ assert.deepEqual(
     { name: '天喜', branch: '未', palaceLabel: '辛未' },
     { name: '红鸾', branch: '丑', palaceLabel: '丁丑' },
   ].sort((a, b) => a.name.localeCompare(b.name, 'zh-CN')),
-  '甲寅年应按卯起子年逆数得到红鸾丑、天喜未；丁丑/辛未是所在宫完整干支',
+  "가음년을 모계자년으로 역산하여 홍란 주와 천희 위를 얻습니다. Ding Chou/Xin Wei는 그들이 위치한 궁전의 완전한 줄기와 가지입니다.",
 );
 
 const representativeYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2016, 2017, 2018, 2019];
@@ -36,15 +36,15 @@ for (let yearBranch = 0; yearBranch < 12; yearBranch += 1) {
   const expectedHongluan = (3 - yearBranch + 12) % 12;
   const expectedTianxi = (expectedHongluan + 6) % 12;
 
-  assert.equal(hongluan.length, 1, `${BRANCHES[yearBranch]}年应且仅应有一颗红鸾`);
-  assert.equal(tianxi.length, 1, `${BRANCHES[yearBranch]}年应且仅应有一颗天喜`);
-  assert.equal(hongluan[0].branch, BRANCHES[expectedHongluan], `${BRANCHES[yearBranch]}年红鸾宫位错误`);
-  assert.equal(tianxi[0].branch, BRANCHES[expectedTianxi], `${BRANCHES[yearBranch]}年天喜宫位错误`);
+  assert.equal(hongluan.length, 1, `${BRANCHES[yearBranch]}해당 연도에는 홍란가 하나만 있어야 합니다.`);
+  assert.equal(tianxi.length, 1, `${BRANCHES[yearBranch]}해당 연도에는 천희가 하나만 있어야 합니다.`);
+  assert.equal(hongluan[0].branch, BRANCHES[expectedHongluan], `${BRANCHES[yearBranch]}홍란년에 잘못된 궁전 위치`);
+  assert.equal(tianxi[0].branch, BRANCHES[expectedTianxi], `${BRANCHES[yearBranch]}천희년에 잘못된 궁전 위치`);
   assert.equal(
     (BRANCHES.indexOf(tianxi[0].branch) - BRANCHES.indexOf(hongluan[0].branch) + 12) % 12,
     6,
-    `${BRANCHES[yearBranch]}年红鸾与天喜必须互为对宫`,
+    `${BRANCHES[yearBranch]}연도 홍란 및 천희는 대궁여야 합니다.`,
   );
 }
 
-console.log('✓ 甲寅案例与十二年支红鸾天喜映射、唯一性及对宫关系回归通过');
+console.log("✓ Jiayin 사례와 12년 분기 홍란천희 매핑, 고유성 및 대궁 관계 회귀에 합격했습니다.");

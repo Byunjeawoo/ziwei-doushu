@@ -1,10 +1,10 @@
 'use client';
 
-/**
- * 古籍库搜索框 — client component
+import { ko, koNode } from '@/lib/i18n/ko';
+/* *
+ * 고대 도서 라이브러리 검색 프레임 — 클라이언트 구성 요소
  *
- * 输入 → 实时搜索 → 跳转 /library/search?q=xxx
- */
+ * 입력 → 실시간 검색 → 점프 /library/search?q=xxx */
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ export default function LibrarySearch() {
         value={q}
         onChange={e => setQ(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && submit()}
-        placeholder="搜索古籍原文，如：七杀朝斗 / 双禄朝垣 / 化忌"
+        placeholder={ko("검색 고대 서적의 원문: 칠살 Chao Dou / Shuang Lu Chao Yuan / 화기")}
         style={{
           flex: 1,
           padding: '10px 14px',
@@ -63,7 +63,7 @@ export default function LibrarySearch() {
           opacity: q.trim() ? 1 : 0.5,
         }}
       >
-        {isPending ? '…' : '搜索'}
+        {koNode(isPending ? '…' : '搜索')}
       </button>
     </div>
   );

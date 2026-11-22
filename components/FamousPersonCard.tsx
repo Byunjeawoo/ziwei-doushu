@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { motion } from 'framer-motion';
 import type { FamousPerson } from '@/lib/ziwei/famous';
 
@@ -24,26 +25,24 @@ export default function FamousPersonCard({ person }: { person: FamousPerson }) {
       }}
     >
       <div className="text-[10px] tracking-widest mb-3 flex items-center gap-2" style={{ color: 'var(--t-faint)' }}>
-        <span style={{ color: catColor, opacity: 0.9, fontSize: '12px' }}>★</span>
-        名人命盘
-        <span className="text-[9px] px-2 py-0.5 rounded-full ml-auto"
+        <span style={{ color: catColor, opacity: 0.9, fontSize: '12px' }}>★</span>{koNode("연예인명반")}<span className="text-[9px] px-2 py-0.5 rounded-full ml-auto"
           style={{ color: catColor, background: catColor + '18', border: `1px solid ${catColor}40` }}>
-          {person.category}
+          {koNode(person.category)}
         </span>
       </div>
 
       <div className="space-y-2.5">
         <div className="flex items-baseline gap-3 flex-wrap">
           <span className="text-base font-semibold" style={{ color: 'var(--t-text1)', letterSpacing: '0.02em' }}>
-            {person.name}
+            {koNode(person.name)}
           </span>
           <span className="text-[11px]" style={{ color: 'var(--t-faint)' }}>
-            {person.year}年 · {person.gender === 'male' ? '男命' : '女命'}
+            {koNode(person.year)}{koNode("연도 ·")}{koNode(person.gender === 'male' ? '男命' : '女命')}
           </span>
         </div>
 
         <div className="text-[11px]" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-          {person.description}
+          {koNode(person.description)}
         </div>
 
         <div className="text-[11px] leading-relaxed px-3 py-2.5 rounded-md"
@@ -52,13 +51,11 @@ export default function FamousPersonCard({ person }: { person: FamousPerson }) {
             background: catColor + '0c',
             border: `1px solid ${catColor}25`,
           }}>
-          <span style={{ color: catColor, fontWeight: 600, marginRight: '4px' }}>命盘亮点：</span>
-          {person.notable}
+          <span style={{ color: catColor, fontWeight: 600, marginRight: '4px' }}>{koNode("명반 하이라이트:")}</span>
+          {koNode(person.notable)}
         </div>
 
-        <div className="text-[10px] mt-2" style={{ color: 'var(--t-faint)', opacity: 0.6, lineHeight: 1.5 }}>
-          ⚠️ 出生时辰为公开文献估算值，仅供研究参考。下方 AI 解读基于此命盘自动生成，与本人无关。
-        </div>
+        <div className="text-[10px] mt-2" style={{ color: 'var(--t-faint)', opacity: 0.6, lineHeight: 1.5 }}>{koNode("⚠️ 탄생 시진은 공공 문헌의 추정치이며 연구 참고용으로만 사용됩니다. 아래 AI 해석은 이 명반을 기반으로 자동 생성된 것이며 나와는 아무런 관련이 없습니다.")}</div>
       </div>
     </motion.div>
   );

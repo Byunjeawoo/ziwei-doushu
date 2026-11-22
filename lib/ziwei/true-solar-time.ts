@@ -1,14 +1,13 @@
-/**
- * 真太阳时统一计算。
+/* *
+ * 진태양시 통합 계산.
  *
- * 口径：地方真太阳时 = 钟表时间 + 经度修正 + 均时差；经度修正 =（出生地经度 − 钟表时区中央经线）× 4 分钟。
- * 国内一律按东八区（中央经线 120°）。★ 2026-10-27 同步：海外出生地传 utcOffsetMinutes（出生地时区的固定标准偏移），
- * 与主流排盘口径一致——不处理夏令时与历史时区；用户填的若是当年钟表读数，先用 clock-adjust.ts 换成标准时间再传进来。
- * 均时差采用 NOAA 的 fractional-year 近似式，1900-2026 年范围内足以稳定
- * 判断紫微斗数的两小时时辰边界。
+ *구경: 로컬 진태양시 = 시계 시간 + 경도 보정 + 평균 시차; 경도 보정 = (출생지 경도 - 시계 시간대 중심 자오선) × 4분.
+ * 국내에서는 모든 지역이 동팔구(중심경선 120°)에 위치함. ★ 2026-10-27 동기화 : 해외 출생지 전송 utcOffsetMinutes (출생지 시간대 고정 표준 오프셋),
+ * 주류 배반 구경과 일치 - 일광 절약 시간제 및 과거 시간대를 처리하지 않습니다. 사용자가 현재 연도의 시계 판독값을 입력하는 경우 먼저 clock-adjust.ts를 사용하여 이를 표준 시간으로 변경한 다음 전달합니다.
+ *평균 시차는 NOAA의 분수 연도 근사 공식을 채택하며 이는 1900-2026 범위에서 충분히 안정적입니다.
+ * 자미두수의 2시간 시진 경계를 결정합니다.
  *
- * 参考：https://gml.noaa.gov/grad/solcalc/solareqns.PDF
- */
+ * 참고 : https://gml.noaa.gov/grad/solcalc/solareqns.PDF */
 
 export interface GregorianDate {
   year: number;
@@ -21,9 +20,9 @@ export type LateZishiRule = 'next-day' | 'current-day' | 'all-current' | 'day-cu
 export interface TrueSolarTimeInput extends GregorianDate {
   clockHour: number;
   clockMinute: number;
-  /** 未提供经度时保持原钟表时间，不做真太阳时校正。 */
+  /* * 경도가 제공되지 않는 경우 원래 시계 시간이 유지되며 진태양시 보정이 수행되지 않습니다. */
   longitude?: number;
-  /** 钟表时间所在时区的标准偏移（分钟，东正西负）；不传 = 北京时间 480（国内、老数据） */
+  /* * 시계 시간이 위치한 시간대의 표준 오프셋(분, 동서 마이너스) 전송되지 않음 = 베이징 시간 480(국내, 오래된 데이터) */
   utcOffsetMinutes?: number;
 }
 
@@ -73,7 +72,7 @@ function dayOfYear(year: number, month: number, day: number): number {
   return Math.floor((Date.UTC(year, month - 1, day) - Date.UTC(year, 0, 0)) / 86_400_000);
 }
 
-/** NOAA 均时差近似值，返回分钟；正值表示真太阳时快于平太阳时。 */
+/* *NOAA 대략적인 평균 시차(돌아가기분); 양수 값은 진태양시가 평균 태양 시간보다 빠르다는 것을 의미합니다. */
 export function equationOfTimeMinutes(
   year: number,
   month: number,
@@ -103,7 +102,7 @@ export function branchFromSolarMinutes(normalizedMinutes: number): number {
 export function calculateTrueSolarTime(input: TrueSolarTimeInput): TrueSolarTimeResult {
   const dateValid = isValidGregorianDate(input.year, input.month, input.day);
   const corrected = input.longitude !== undefined && Number.isFinite(input.longitude);
-  // 中央经线 = 时区偏移 / 4（480 分钟 → 120°）；国内仍是原式 (经度 − 120) × 4，结果逐位不变
+  // 중앙 자오선 = 시간대 오프셋 / 4(480분 → 120°); 국내에서는 여전히 원래 공식(경도 - 120) × 4이며 결과는 조금씩 변경되지 않습니다.
   const meridian = input.utcOffsetMinutes !== undefined && Number.isFinite(input.utcOffsetMinutes) ? input.utcOffsetMinutes / 4 : 120;
   const longitudeCorrectionMinutes = corrected ? (input.longitude! - meridian) * 4 : 0;
   const eot = corrected && dateValid
@@ -112,7 +111,7 @@ export function calculateTrueSolarTime(input: TrueSolarTimeInput): TrueSolarTime
   const totalCorrectionMinutes = longitudeCorrectionMinutes + eot;
   const rawMinutes = input.clockHour * 60 + input.clockMinute + totalCorrectionMinutes;
 
-  // 页面输入精度为分钟；显示和时辰边界统一按最近一秒，避免浮点毛刺。
+  // 페이지의 입력 정밀도는 분입니다. 디스플레이 및 시진 경계는 부동 소수점 결함을 방지하기 위해 최신 초를 기준으로 균일하게 적용됩니다.
   const roundedTotalSeconds = Math.round(rawMinutes * 60);
   const dayOffset = Math.floor(roundedTotalSeconds / SECONDS_PER_DAY);
   const secondOfDay = mod(roundedTotalSeconds, SECONDS_PER_DAY);
@@ -137,7 +136,7 @@ export function calculateTrueSolarTime(input: TrueSolarTimeInput): TrueSolarTime
   };
 }
 
-/** 把真太阳日与晚子时流派规则合并成最终排盘日相对输入日的偏移。 */
+/* * 실제 태양일과 야자시 장르 규칙을 입력일을 기준으로 최종 배반일의 오프셋에 병합합니다. */
 export function resolveZiweiDayOffset(
   solar: Pick<TrueSolarTimeResult, 'dayOffset' | 'normalizedMinutes' | 'branch'>,
   lateZishi: LateZishiRule = 'next-day',

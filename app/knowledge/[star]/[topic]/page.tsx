@@ -1,16 +1,16 @@
-/**
- * /knowledge/[star]/[topic] — SEO 落地页
+import { ko, koNode } from '@/lib/i18n/ko';
+/* *
+ * /knowledge/[별]/[주제] — SEO 랜딩 페이지
  *
- * 14 主星 × 13 topic = 182 个独立 URL
- * 每页含完整的 STAR_DB 4 段论断（一句话定调/核心论断/命盘依据/经典出处）
+ * 14개 주성 × 13 주제 = 182개의 독립적인 URL
+ * 각 페이지에는 완전한 STAR_DB 4문단 인수가 포함되어 있습니다(한 문장은 톤/핵심 인수/명반 기반/클래식 소스를 설정합니다).
  *
- * SEO 要点：
- *  - title 含主关键词（如"紫微入命宫·倪海厦体系详解"）
- *  - description 用 dingdiao（一句话定调）
- *  - JSON-LD Article 结构化数据
- *  - 内链：同主星其他 12 宫 + 同宫其他 13 主星
- *  - generateStaticParams 静态生成，零运行时开销
- */
+ * SEO 포인트:
+ * - 제목에 주요 키워드가 포함되어 있습니다(예: "자미가 명궁·니하이샤 시스템 세부 설명을 입력합니다.")
+ * - 설명에서는 dingdiao를 사용합니다(한 문장으로 분위기를 설정합니다).
+ * - JSON-LD 기사 구조 데이터
+ * - 내부링크 : 주성 외 12개 궁 + 동궁 외 13개 주성과 동일
+ * - generateStaticParams는 정적으로 생성되며 런타임 오버헤드는 0입니다. */
 
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -26,13 +26,13 @@ import {
 } from '@/lib/seo/knowledge';
 import { SITE_URL } from '@/lib/site';
 
-// 允许动态参数：如果某个 star/topic 组合不在 generateStaticParams 列表中
-// 也允许运行时按需渲染，避免中文 URL 编码问题导致 404
+// 동적 매개변수 허용: 별표/주제 조합이 generateStaticParams 목록에 없는 경우
+// 또한 중국어 URL 인코딩 문제로 인해 발생하는 404를 방지하기 위해 런타임 시 주문형 렌더링을 허용합니다.
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const routes = getAllKnowledgeRoutes();
-  // URL 用拼音 slug 替代中文，避开 Vercel/CDN 中文路由边界问题
+  // URL은 Vercel/CDN 중국어 라우팅 경계 문제를 피하기 위해 중국어 대신 병음 슬러그를 사용합니다.
   return routes.map(r => ({ star: r.slug, topic: r.topic }));
 }
 
@@ -43,9 +43,9 @@ export async function generateMetadata({ params }: { params: Promise<{ star: str
   const data = getKnowledge(star, topic as TopicKey);
   if (!data.exists) return {};
 
-  const title = `${star}入${data.palaceName}宫 · ${data.topicLabel} · 倪海厦体系详解`;
+  const title = `${star}들어가다${data.palaceName}궁 ·${data.topicLabel}· 니하이샤 시스템에 대한 자세한 설명`;
   const description = data.parsed.dingdiao
-    || `${star}入${data.palaceName}宫的紫微斗数解读 — 基于倪海厦《天纪》体系与古籍《紫微斗数全集》《骨髓赋》。`;
+    || `${star}들어가다${data.palaceName}Palace의 자미두수 해석 - 니하이샤 "천기" 시스템과 고대 서적 "자미두수전집" 및 "골수부"를 기반으로 합니다.`;
 
   return {
     title,
@@ -61,8 +61,8 @@ export async function generateMetadata({ params }: { params: Promise<{ star: str
     },
     keywords: [
       '紫微斗数', '倪海厦', star, data.palaceName, data.topicLabel,
-      `${star}${data.palaceName}`, `${star}入${data.palaceName}`,
-      `紫微斗数 ${star}`, '倪海厦紫微斗数', '紫微斗数全集',
+      `${star}${data.palaceName}`, `${star}들어가다${data.palaceName}`,
+      `자미두수${star}`, '倪海厦紫微斗数', '紫微斗数全集',
     ],
   };
 }
@@ -74,18 +74,18 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
   const data = getKnowledge(star, topic as TopicKey);
   if (!data.exists) notFound();
 
-  // 同主星其他 topic
+  // 주성 다른 주제와 동일
   const otherTopicsForStar = ALL_TOPICS.filter(t => t !== topic && getKnowledge(star, t).exists);
-  // 同 topic 其他主星
+  // 같은 주제 other주성
   const otherStarsForTopic = ALL_STARS.filter(s => s !== star && getKnowledge(s, topic as TopicKey).exists);
 
   // JSON-LD
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: `${star}入${data.palaceName}宫 · ${data.topicLabel}`,
+    headline: `${star}들어가다${data.palaceName}궁 ·${data.topicLabel}`,
     description: data.parsed.dingdiao,
-    author: { '@type': 'Organization', name: '紫微研究 · 倪海厦正宗' },
+    author: { '@type': 'Organization', name: "자미 연구 · 니하이샤 정품" },
     publisher: {
       '@type': 'Organization',
       name: '紫微研究',
@@ -94,7 +94,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
     datePublished: '2026-04-28',
     dateModified: '2026-04-28',
     mainEntityOfPage: `${SITE_URL}/knowledge/${slug}/${topic}`,
-    articleSection: '紫微斗数 · 倪海厦体系',
+    articleSection: "자미두수 · 니하이샤 시스템",
     keywords: [`紫微斗数`, star, data.palaceName, data.topicLabel].join(', '),
   };
 
@@ -105,76 +105,68 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
       {/* 顶栏 */}
       <div className="px-6 py-4 flex items-center justify-between"
         style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
-        <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.3em', textDecoration: 'none' }}>
-          ← 首页
-        </Link>
-        <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.2em' }}>
-          倪师方法论 · 知识库
-        </div>
-        <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>
-          起盘 →
-        </Link>
+        <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.3em', textDecoration: 'none' }}>{koNode("← 홈")}</Link>
+        <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.2em' }}>{koNode("니하이샤 선생 방법론 · 기술 자료")}</div>
+        <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>{koNode("출발 →")}</Link>
       </div>
 
       <article className="max-w-3xl mx-auto px-6 py-12">
         {/* 面包屑 */}
         <nav style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em', marginBottom: '16px' }}>
-          <Link href="/" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>首页</Link>
+          <Link href="/" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>{koNode("홈페이지")}</Link>
           <span style={{ margin: '0 8px' }}>/</span>
-          <Link href="/knowledge" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>知识库</Link>
+          <Link href="/knowledge" style={{ color: 'var(--tx-3)', textDecoration: 'none' }}>{koNode("지식 기반")}</Link>
           <span style={{ margin: '0 8px' }}>/</span>
-          <span>{star}</span>
+          <span>{koNode(star)}</span>
           <span style={{ margin: '0 8px' }}>·</span>
-          <span style={{ color: 'var(--ac)' }}>{data.palaceName}宫</span>
+          <span style={{ color: 'var(--ac)' }}>{koNode(data.palaceName)}{koNode("궁")}</span>
         </nav>
 
         {/* 标题区 */}
         <header style={{ marginBottom: '36px' }}>
           <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.25em', marginBottom: '8px' }}>
-            {data.topicLabel} · 倪海厦体系详解
-          </div>
+            {koNode(data.topicLabel)}{koNode("· 니하이샤 시스템에 대한 자세한 설명")}</div>
           <h1 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.1em', lineHeight: 1.2 }}>
-            {star}入{data.palaceName}宫
-          </h1>
-          {STAR_BRIEF_SEO[star] && (
+            {koNode(star)}{koNode("들어가다")}{koNode(data.palaceName)}{koNode("궁")}</h1>
+          {koNode(STAR_BRIEF_SEO[star] && (
             <p style={{ fontSize: '13px', color: 'var(--tx-2)', marginTop: '14px', lineHeight: 1.8 }}>
-              {STAR_BRIEF_SEO[star]}
+              {koNode(STAR_BRIEF_SEO[star])}
             </p>
-          )}
+          ))}
         </header>
 
         {/* 内容 4 段 */}
-        {data.parsed.dingdiao && (
-          <Section title="一句话定调" gradient>
+        {koNode(data.parsed.dingdiao && (
+          <Section title={ko("한 문장이 분위기를 결정한다")} gradient>
             <p style={{ fontSize: '17px', color: 'var(--tx-0)', lineHeight: 1.9, fontWeight: 500, letterSpacing: '0.04em' }}>
-              {data.parsed.dingdiao}
+              {koNode(data.parsed.dingdiao)}
             </p>
           </Section>
-        )}
+        ))}
 
-        {data.parsed.lundian && (
-          <Section title="核心论断">
+        {koNode(data.parsed.lundian && (
+          <Section title={ko("핵심 주장")}>
             <div style={{ fontSize: '15px', color: 'var(--tx-0)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
-              {data.parsed.lundian}
+              {koNode(data.parsed.lundian)}
             </div>
           </Section>
-        )}
+        ))}
 
-        {data.parsed.yiju && (
-          <Section title="命盘依据">
+        {koNode(data.parsed.yiju && (
+          <Section title={ko("명반 기준")}>
             <div style={{ fontSize: '14px', color: 'var(--tx-0)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
-              {data.parsed.yiju}
+              {koNode(data.parsed.yiju)}
             </div>
           </Section>
-        )}
+        ))}
 
-        {data.parsed.chuchu && (
-          <Section title="经典出处" minimal>
+        {koNode(data.parsed.chuchu && (
+          <Section title={ko("클래식 소스")} minimal>
             <div style={{ fontSize: '13px', color: 'var(--tx-2)', lineHeight: 2, letterSpacing: '0.02em', whiteSpace: 'pre-wrap' }}>
-              {data.parsed.chuchu}
+              {koNode(data.parsed.chuchu)}
             </div>
           </Section>
-        )}
+        ))}
 
         {/* CTA */}
         <div style={{
@@ -185,12 +177,9 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
           border: '1px solid rgba(184,146,42,0.3)',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: '14px', color: 'var(--tx-0)', fontWeight: 600, letterSpacing: '0.1em', marginBottom: '6px' }}>
-            想看你自己命盘的{data.topicLabel}？
+          <div style={{ fontSize: '14px', color: 'var(--tx-0)', fontWeight: 600, letterSpacing: '0.1em', marginBottom: '6px' }}>{koNode("당신의 명반을 보고 싶다")}{koNode(data.topicLabel)}？
           </div>
-          <div style={{ fontSize: '12px', color: 'var(--tx-2)', marginBottom: '16px' }}>
-            输入生辰起盘 · 倪师正宗解读 · AI 答疑伴学
-          </div>
+          <div style={{ fontSize: '12px', color: 'var(--tx-2)', marginBottom: '16px' }}>{koNode("생년월일 입력 · 니하이샤 선생 정통통역 · AI 질의응답 동행자")}</div>
           <Link href="/chart" style={{
             display: 'inline-block',
             padding: '12px 28px',
@@ -202,15 +191,13 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
             letterSpacing: '0.15em',
             textDecoration: 'none',
             boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
-          }}>
-            立即起盘 →
-          </Link>
+          }}>{koNode("지금 거래 시작 →")}</Link>
         </div>
 
         {/* 内链：同主星其他 topic */}
-        <Section title={`${star}星的其他宫位解读`} minimal>
+        <Section title={ko(`${star}다른 별의 집에 대한 해석`)} minimal>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {otherTopicsForStar.map(t => {
+            {koNode(otherTopicsForStar.map(t => {
               const d = getKnowledge(star, t);
               return (
                 <Link
@@ -226,17 +213,17 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                     textDecoration: 'none',
                   }}
                 >
-                  {star}入{d.palaceName}
+                  {koNode(star)}{koNode("들어가다")}{koNode(d.palaceName)}
                 </Link>
               );
-            })}
+            }))}
           </div>
         </Section>
 
         {/* 内链：同 topic 其他主星 */}
-        <Section title={`其他主星入${data.palaceName}宫的解读`} minimal>
+        <Section title={ko(`기타 주성 입력${data.palaceName}궁궐의 해석`)} minimal>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {otherStarsForTopic.slice(0, 13).map(s => (
+            {koNode(otherStarsForTopic.slice(0, 13).map(s => (
               <Link
                 key={s}
                 href={`/knowledge/${STAR_TO_SLUG[s]}/${topic}`}
@@ -250,9 +237,9 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                   textDecoration: 'none',
                 }}
               >
-                {s}入{data.palaceName}
+                {koNode(s)}{koNode("들어가다")}{koNode(data.palaceName)}
               </Link>
-            ))}
+            )))}
           </div>
         </Section>
 
@@ -265,19 +252,15 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
           borderRadius: '10px',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: '11px', color: 'var(--ac-dim)', letterSpacing: '0.15em', marginBottom: '6px' }}>
-            想读原典？
-          </div>
-          <Link href="/library" style={{ fontSize: '13px', color: 'var(--ac)', fontWeight: 500, letterSpacing: '0.1em', textDecoration: 'none' }}>
-            📜 查阅古籍原典库 — 紫微斗数全集 / 全书 / 骨髓赋 →
-          </Link>
+          <div style={{ fontSize: '11px', color: 'var(--ac-dim)', letterSpacing: '0.15em', marginBottom: '6px' }}>{koNode("원본 텍스트를 읽고 싶으십니까?")}</div>
+          <Link href="/library" style={{ fontSize: '13px', color: 'var(--ac)', fontWeight: 500, letterSpacing: '0.1em', textDecoration: 'none' }}>{koNode("📜 고대 서적 원본 데이터베이스 확인 — 자미두수전집 / 전체 도서 / 골수부 →")}</Link>
         </div>
       </article>
 
       {/* 页脚 */}
       <footer style={{ borderTop: '1px solid rgba(184,146,42,0.15)', padding: '20px 24px', textAlign: 'center', fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
-        <div style={{ marginBottom: '6px' }}>紫微研究 · 基于倪海厦正宗体系 · 仅供学习参考</div>
-        <div style={{ opacity: 0.85 }}>本平台不构成任何医疗、投资、法律或重大决策建议</div>
+        <div style={{ marginBottom: '6px' }}>{koNode("자미 연구 · 니하이샤 정통 시스템 기반 · 학습 참고용으로만 사용")}</div>
+        <div style={{ opacity: 0.85 }}>{koNode("이 플랫폼은 의료, 투자, 법적 또는 주요 의사 결정 조언을 구성하지 않습니다.")}</div>
       </footer>
     </div>
   );
@@ -297,7 +280,7 @@ function Section({ title, children, gradient, minimal }: { title: string; childr
         marginBottom: '12px',
       }}>
         <span style={{ width: '4px', height: '14px', background: 'var(--ac)', borderRadius: '2px' }} />
-        {title}
+        {koNode(title)}
       </h2>
       <div style={{
         background: gradient
@@ -307,7 +290,7 @@ function Section({ title, children, gradient, minimal }: { title: string; childr
         borderRadius: '10px',
         padding: minimal ? '14px 18px' : '20px 22px',
       }}>
-        {children}
+        {koNode(children)}
       </div>
     </section>
   );

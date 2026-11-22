@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import ScrollIntro from '@/components/ScrollIntro';
 
 export default function PreviewPage() {
   const router = useRouter();
-  // replayKey 用于强制重置 ScrollIntro（用户点"再播放一次"时）
+  // replayKey는 ScrollIntro를 강제로 재설정하는 데 사용됩니다(사용자가 "다시 재생"을 클릭한 경우).
   const [replayKey, setReplayKey] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -16,7 +17,7 @@ export default function PreviewPage() {
       <ScrollIntro key={replayKey} onComplete={() => setDone(true)} />
 
       {/* 动画结束后的「样片说明 + 操作按钮」面板 */}
-      {done && (
+      {koNode(done && (
         <main style={{
           minHeight: '100vh',
           background: '#0d0a08',
@@ -24,11 +25,11 @@ export default function PreviewPage() {
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           padding: '48px 24px',
-          fontFamily: '"STSong", "Songti SC", serif',
+          fontFamily: '"Batang", "AppleMyungjo", serif',
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '11px', letterSpacing: '0.4em', color: '#c89647', marginBottom: '16px' }}>
-            SCROLL · INTRO · PREVIEW
+            두루마리 · 도입부 · 미리보기
           </div>
           <h1 style={{
             fontSize: 'clamp(28px, 3.5vw, 40px)',
@@ -36,19 +37,14 @@ export default function PreviewPage() {
             color: '#e8dcc4',
             marginBottom: '16px',
             fontWeight: 600,
-          }}>
-            紫微卷轴 · 开场预览
-          </h1>
+          }}>{koNode("자미 스크롤 · 오프닝 미리보기")}</h1>
           <p style={{
             fontSize: '14px', color: '#a89878',
             maxWidth: '500px', lineHeight: 1.9,
             letterSpacing: '0.1em',
             marginBottom: '40px',
             fontFamily: '"STKaiti", "Kaiti SC", serif',
-          }}>
-            刚才看到的卷轴效果会在每次进入主页时缓缓铺开。<br />
-            如果满意，告诉我，我把它接到主页 / 上线。
-          </p>
+          }}>{koNode("방금 보신 스크롤 효과는 홈페이지에 들어갈 때마다 천천히 펼쳐집니다.")}<br />{koNode("마음에 드시면 알려주시면 홈페이지/온라인에 추가하겠습니다.")}</p>
 
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '24px' }}>
             <button
@@ -64,9 +60,7 @@ export default function PreviewPage() {
                 cursor: 'pointer',
                 fontWeight: 600,
               }}
-            >
-              再 播 放 一 次
-            </button>
+            >{koNode("다시 재생해 보세요")}</button>
             <button
               onClick={() => router.push('/')}
               style={{
@@ -79,9 +73,7 @@ export default function PreviewPage() {
                 border: '1px solid rgba(232,220,196,0.25)',
                 cursor: 'pointer',
               }}
-            >
-              进 入 原 版 首 页
-            </button>
+            >{koNode("원래 홈페이지를 입력하세요.")}</button>
           </div>
 
           <div style={{
@@ -89,11 +81,11 @@ export default function PreviewPage() {
             letterSpacing: '0.15em',
             display: 'flex', gap: '20px',
           }}>
-            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>原版 ↗</Link>
+            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>{koNode("원본 ↗")}</Link>
             <span>·</span>
-            <Link href="/chart" style={{ color: 'inherit', textDecoration: 'none' }}>命盘</Link>
+            <Link href="/chart" style={{ color: 'inherit', textDecoration: 'none' }}>{koNode("명반")}</Link>
             <span>·</span>
-            <Link href="/heming" style={{ color: 'inherit', textDecoration: 'none' }}>合盘</Link>
+            <Link href="/heming" style={{ color: 'inherit', textDecoration: 'none' }}>{koNode("복합 디스크")}</Link>
           </div>
 
           {/* 时间轴说明 */}
@@ -109,17 +101,15 @@ export default function PreviewPage() {
             fontFamily: '"STKaiti", serif',
             textAlign: 'left',
           }}>
-            <div style={{ color: '#c89647', marginBottom: '12px', letterSpacing: '0.2em', fontSize: '11px' }}>动画时间轴</div>
-            <div>· 0.0 ~ 1.7 s &nbsp;&nbsp;卷轴从中央向两侧展开</div>
-            <div>· 1.9 ~ 2.7 s &nbsp;&nbsp;宣纸内容浮现（标题 + 副标 + 朱砂印）</div>
-            <div>· 2.7 ~ 3.5 s &nbsp;&nbsp;停留欣赏</div>
-            <div>· 3.5 ~ 4.2 s &nbsp;&nbsp;整体淡出，进入主页</div>
-            <div style={{ marginTop: '12px', color: '#6e6048', fontSize: '11px' }}>
-              用户随时可点右下「跳过」直接进入主页。
-            </div>
+            <div style={{ color: '#c89647', marginBottom: '12px', letterSpacing: '0.2em', fontSize: '11px' }}>{koNode("애니메이션 타임라인")}</div>
+            <div>{koNode("· 0.0 ~ 1.7 s 스크롤이 중앙에서 양쪽으로 펼쳐집니다.")}</div>
+            <div>{koNode("· 1.9 ~ 2.7 s 라이스페이퍼의 내용이 나타납니다(제목+부제+진사씰)")}</div>
+            <div>{koNode("· 2.7~3.5초 머물면서 즐기세요")}</div>
+            <div>{koNode("· 3.5 ~ 4.2 s 전체적으로 페이드 아웃하여 홈페이지 진입")}</div>
+            <div style={{ marginTop: '12px', color: '#6e6048', fontSize: '11px' }}>{koNode("사용자는 언제든지 오른쪽 하단의 '건너뛰기'를 클릭하여 홈페이지로 직접 이동할 수 있습니다.")}</div>
           </div>
         </main>
-      )}
+      ))}
     </>
   );
 }

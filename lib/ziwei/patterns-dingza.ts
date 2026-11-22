@@ -1,40 +1,39 @@
-/**
- * 《紫微斗数全书》卷一〈定杂局〉八格 · 严格实现
+/* *
+ * "자미두수전서" 1권 "잡게임 정하기" 8프레임 · 엄격하게 구현
  *
- * 底本：卷一〈定杂局〉八条，各带注文。姊妹篇〈定贵局〉〈定富局〉〈定贫贱局〉
- *      见 patterns-dinggui/dingfu/dingpin.ts；判读纪律（照字面、不放宽、
- *      注文歧义标 disputed 并注明所取读法）与彼处相同。
+ * 원문: 1권 "딩자주"에는 8개의 기사가 포함되어 있으며 각 기사에는 주석이 있습니다. 동행 장 "Ding Gui Bureau" "Ding Gui Bureau" "Ding Gui Bureau" "Ding Poverty Bureau"
+ * 패턴-dinggui/dingfu/dingpin.ts를 참조하세요. 학문을 해석하다(문자 그대로, 편안하지 않고,
+ * 본문에 모호한 부분이 있을 경우(논의의 여지가 있음을 표기하고 읽은 내용을 표시) 다른 곳과 동일합니다.
  *
- * ★ 本表与前四表的根本区别：命中单位不是命盘，是运限。
- *   注文里的「二限」「限破」「限逢」「四十后行墓运」「前限接后限」「一年好
- *   一年不好」，八条全部以大限或流年为单位。所以本模块的返回值是
- *   「哪一条格、在哪个大限（或哪段流年）成立」，不是布尔的「有没有格」。
- *   消费方式：`detectDingZa(chart)` 取全量；`detectDingZa(chart, { age })`
- *   取覆盖该虚岁的部分（UI 展示「当前大限」用 chart.currentAge）。
- *   **不要**把本表接进 detectPatterns——把运限格塞进命盘格列表，
- *   正是《全书》原文自己都分开的两类。
+ * ★ 이 테이블과 처음 4개 테이블의 근본적인 차이점: 히트 단위는 명반이 아니라 행운 제한입니다.
+ * 주석에 있는 "두 개의 한계", "부족한계", "만나는한계"라는 단어는 "행운은 마흔 이후에 온다", "전자의 한계 뒤에는 나중의 한계가 올 것이다", "좋은 한 해"
+ * 1년은 좋지 않습니다.", 8개 모두 대한 또는 유년 단위입니다. 따라서 이 모듈의 돌아가기 값은
+ * "대한(또는 유년의 어느 섹션)이 참인 그리드는 무엇입니까?"는 "그리드가 있는지 여부"라는 부울이 아닙니다.
+ * 소비 방식: `detectDingZa(chart)`가 전액을 가져갑니다. `detectDingZa(chart, { age })`
+ * 세는나이를 덮는 부분을 가져옵니다(UI에 "현재 대한"를 표시하려면 Chart.currentAge를 사용하세요).
+ * **이 테이블을 감지 패턴에 연결하지 마세요** - 패턴을 명반 패턴 목록에 삽입하세요.
+ * 이는 『전서』의 원문 자체가 구분하는 두 가지 범주입니다.
  *
- * 共用度量（八条注文反复用到「弱 / 吉地 / 好」，必须一套口径判到底，
- * 否则各条各判等于暗中放宽）：
- *  - 宫弱：无主星，或主星 brightnessRaw 全为「陷」（7 档口径，与 dingpin 一致）；
- *  - 宫强（行吉地）：主星 ≥1 且至少一颗 brightnessRaw 为「庙」或「旺」；
- *  - 限好：限命宫强，且限命三方四正会吉星 ≥2，且六煞 ≤1；
- *  - 吉星口径：左辅右弼、昌曲、魁钺、禄存、天马，另加主星四化之禄权科（与 dinggui 一致）；
- *  - 空亡口径：旬空/副旬/截路/截空/空亡/副截六星全表（与 dinggui/dingpin 一致）；
- *  - 流年命宫：安于流年地支所在宫（斗数正统安法）。流年地支按公历年序推
- *    （(出生年 + 虚岁 − 5) mod 12），农历/立春交节边界 ±1 岁的盘位误差
- *    只影响边界年，见 no.6 的 why。流年四化不立（本实现不计流年四化），
- *    流年吉凶只由生年四化与星曜落宫判——颗粒度粗，所以 no.6 标 disputed。
+ * 공유 측정(8개의 주석은 "약함/상서로움/좋음"을 반복적으로 사용하며 하나의 구경에 따라 판단되어야 합니다.
+ * 그렇지 않은 경우 각 항목은 별도로 심사되며 이는 암시적 완화와 동일합니다.)
+ * - Palace 약함: 주성 또는 주성 없음 밝기Raw가 모두 "갇혀" 있습니다(7개 수준의 구경, 딩핀과 일치).
+ * - Gongqiang(상서로운 장소): 주성 ≥1 및 최소 하나의 밝기Raw가 "사원" 또는 "왕"입니다.
+ * - 제한된 선: 명궁만 강하고 수명 제한 삼방사정은 길성 ≥2이며 여섯 명의 악령은 ≤1입니다.
+ * - 길성 구경: 좌보우필, Changqu, Kuiyue, 녹존, 천마, 주성사화(dinggui와 일치)
+ * - 공수 구경: 순공/부순/Jumping/절공/Airborne/부절 6성 전체 목록(dinggui/dingpin과 일치)
+ * - 유년명궁: 유년지지가 위치한 궁에 만족하세요(두슈는 정통적이고 안전합니다). 유년지지는 양력의 연대순으로 권장됩니다
+ * ((생년 + 세는나이 − 5 중) mod 12), 음력/춘제 경계의 시작 디스크 위치 오차 ±1년
+ * 경계연도에만 영향을 미칩니다. 이유는 6번에서 확인하세요. 유년사화가 설정되지 않았습니다(유년사화는 이 구현에 포함되지 않음).
+ * 유년의 좋고 나쁨은 생년사화와 궁궐의 별에 의해서만 판단될 수 있습니다. 세분성이 거칠기 때문에 no.6은 논쟁의 여지가 있는 것으로 표시됩니다.
  *
- * ⚠️ 盘对象陷阱：`ZiweiChart.palaces` 实际从寅宫（branch=2）起排，
- *    一律按 branch 查，禁止用下标。大限顺序必须按 startAge 排，
- *    daXians 数组本身不保证有序（patterns-dinggui 时代已确认）。
- */
+ * ⚠️ 대상 함정: `ZiweiChart.palaces`는 실제로 음궁(분기=2)에서 시작하며,
+ * 항상 지점별로 검색하세요. 아래첨자는 금지됩니다. 대한의 순서는 startAge순으로 정렬되어야 합니다.
+ * daXians 배열 자체는 주문이 보장되지 않습니다(패턴딩귀 시대에 확인됨). */
 
 import type { ZiweiChart, Star, DaXian } from './types';
 import type { GeStatus } from './patterns-dinggui';
 
-// ────────────────── 盘面读取 ──────────────────
+// ────────────────── 디스크 읽기 ──────────────────
 
 const palaceAt = (c: ZiweiChart, branch: number) =>
   c.palaces.find(p => p.branch === ((branch % 12) + 12) % 12)!;
@@ -50,43 +49,43 @@ const starOf = (c: ZiweiChart, branch: number, name: string): Star | undefined =
 const majorsAt = (c: ZiweiChart, branch: number): Star[] =>
   starsAt(c, branch).filter(s => s.type === 'major');
 
-/** 本宫 + 三合 + 对宫 */
+/* * 이 궁 + 삼합 + 대궁 */
 const sanFang = (b: number): number[] => [b, (b + 4) % 12, (b + 8) % 12, (b + 6) % 12];
 
-// ────────────────── 共用度量 ──────────────────
+// ────────────────── 공유 지표 ──────────────────
 
 const SHA_STARS = ['擎羊', '陀罗', '火星', '铃星', '地空', '地劫'];
 const JI_STARS = ['左辅', '右弼', '文昌', '文曲', '天魁', '天钺', '禄存', '天马'];
 const KONG_STARS = ['旬空', '副旬', '截路', '截空', '空亡', '副截'];
-const MU_BRANCHES = [1, 4, 7, 10]; // 丑辰未戌，四墓库
+const MU_BRANCHES = [1, 4, 7, 10]; // 츄첸은 아직 여기 있어요, 무덤이 4개 있어요
 
 const isXian = (s: Star): boolean => s.brightnessRaw === '陷';
 const isMiaoWang = (s: Star): boolean => s.brightnessRaw === '庙' || s.brightnessRaw === '旺';
 
-/** 宫弱：无主星，或主星全陷 */
+/* * 약한 궁: 주성 없음, 또는 모두 주성 */
 const isWeakPalace = (c: ZiweiChart, b: number): boolean => {
   const majors = majorsAt(c, b);
   return majors.length === 0 || majors.every(isXian);
 };
 
-/** 宫强（行吉地）：有主星且至少一颗庙旺 */
+/* * 공강(길상) : 주성이 있고 적어도 하나의 묘왕이 있습니다. */
 const isStrongPalace = (c: ZiweiChart, b: number): boolean =>
   majorsAt(c, b).some(isMiaoWang);
 
-/** 诸宫会吉星数（吉星曜 + 主星四化禄权科） */
+/* * Zhugonhui 길성 번호 (길성朜 + 주성사화 Luquanke) */
 const jiCountIn = (c: ZiweiChart, branches: number[]): number =>
   branches.reduce((n, b) => n + starsAt(c, b).filter(
     s => JI_STARS.includes(s.name) || (s.type === 'major' && s.siHua && s.siHua !== '忌'),
   ).length, 0);
 
-/** 诸宫六煞数 */
+/* * 궁궐의 여섯 악수 */
 const shaCountIn = (c: ZiweiChart, branches: number[]): number =>
   branches.reduce((n, b) => n + starsAt(c, b).filter(s => SHA_STARS.includes(s.name)).length, 0);
 
 const isKongPalace = (c: ZiweiChart, b: number): boolean =>
   starsAt(c, b).some(s => KONG_STARS.includes(s.name));
 
-/** 限好：限命宫强 + 三方四正会吉 ≥2 + 六煞 ≤1（口径见头部注释） */
+/* *양품 한정 : 명궁 강함 + 삼방사정 휘지 ≥2 + 리우샤 ≤1 (구경은 머리 부분 참고) */
 const isXianHao = (c: ZiweiChart, dx: DaXian): boolean => {
   const b = dx.palaceBranch;
   if (!isStrongPalace(c, b)) return false;
@@ -94,24 +93,23 @@ const isXianHao = (c: ZiweiChart, dx: DaXian): boolean => {
   return jiCountIn(c, sf) >= 2 && shaCountIn(c, sf) <= 1;
 };
 
-/** 星坐空亡宫（禄衰马困用）：该星所在宫含空亡诸星 */
+/* * 별이 공허한 죽음의 궁에 앉아 있다(운세가 쇠퇴하고 말이 갇혔을 때 사용) : 별이 위치한 궁에는 공허한 죽음의 별이 있다. */
 const starSitsKong = (c: ZiweiChart, name: string): boolean => {
   const b = c.palaces.find(p => p.stars.some(s => s.name === name))?.branch;
   return b === undefined ? false : isKongPalace(c, b);
 };
 
-/** 流年地支（公历年序近似，见头部注释）：虚岁 age → 地支索引 */
+/* * 유년지지 (양력 연도 순서는 대략적인 것입니다. 헤더 참고 참조): 세는나이 연령 → 지지 지수 */
 const yearBranchOf = (c: ZiweiChart, age: number): number =>
   (((c.birthInfo.year + age - 1 - 4) % 12) + 12) % 12;
 
 type Grade = 'ji' | 'xiong' | 'ping';
 
-/**
- * 流年吉凶（no.6 用，口径见头部注释）：
- *  - 凶：流年命宫坐生年化忌，或坐六煞 ≥2；
- *  - 吉：三方四正会禄（禄存/化禄）或会吉星 ≥2，且命宫不凶；
- *  - 平：其余。
- */
+/* *
+ * 유년 좋거나 나쁨(6번의 경우 구경에 대한 헤드 노트 참조):
+ * - 불운: 유년명궁은 생년화기에 앉아 있거나 Liusha ≥2에 앉아 있습니다.
+ * - Ji: 삼방사정은 행운이 있을 것입니다(녹존/화록) 또는 길성 ≥ 2이고 명궁은 불운이 아닙니다.
+ * - 플랫: 나머지. */
 const liuNianGrade = (c: ZiweiChart, age: number): Grade => {
   const b = yearBranchOf(c, age);
   const shaInMing = starsAt(c, b).filter(s => SHA_STARS.includes(s.name)).length;
@@ -123,25 +121,24 @@ const liuNianGrade = (c: ZiweiChart, age: number): Grade => {
   return 'ping';
 };
 
-// ────────────────── 类型 ──────────────────
+// ───────────────── 종류 ──────────────────
 
 export interface DingZaGe {
-  /** 原书序号 1-8 */
+  /* *원작 일련번호 1~8 */
   no: number;
   name: string;
-  /** 原文注文 */
+  /* * 원본 텍스트 주석 */
   note: string;
   status: GeStatus;
-  /** status 为 disputed 时的说明；derivable 而读法需交代时也用 */
+  /* * 상태에 대해 이의가 있을 때의 설명; 파생어는 발음을 설명해야 할 때도 사용됩니다. */
   why?: string;
-  /** 命中单位：大限 / 流年 / 命盘 */
+  /* * 타격 유닛 : 대한 / 유년 / 명반 */
   unit: '大限' | '流年';
-  /**
-   * 判定函数：返回命中的运限列表。
-   *  - unit === '大限'：返回命中的大限（dxs 按起岁排序）；
-   *  - unit === '流年'：返回的是「流年窗」——用 startAge/endAge 表达
-   *    交替发生的连续两岁，palaceBranch/palaceName 表达后一年的流年命宫。
-   */
+  /* *
+   * 판단 기능: 돌아가기가 적중한 행운 한계 목록입니다.
+   * - 단위 === '대한': 돌아가기가 대한을 공격합니다(dxs는 시작 연령을 기준으로 정렬됨).
+   * - 단위 === '유년': 돌아가기는 "유년 창"입니다 - startAge/endAge로 표현됩니다.
+   * 2년 연속 번갈아 발생하며, PalaceBranch/palaceName은 1년 후의 유년명궁을 나타냅니다. */
   judge?: (c: ZiweiChart, dxs: DaXian[]) => Array<{
     dx?: DaXian;
     startAge?: number;
@@ -150,24 +147,24 @@ export interface DingZaGe {
   }>;
 }
 
-// ────────────────── 八格 ──────────────────
+// ───────────────── 사각형 8개 ──────────────────
 
 export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 1,
     name: '风云际会',
-    note: '身命虽弱二限逢禄马是也',
+    note: "신궁과 명궁이 약하더라도 두 운한에서 녹존과 천마를 만나는 경우이다.",
     status: 'derivable',
     unit: '大限',
-    // 「二限」通解为大限与流年双层。流年层按几何近乎空转：流年命宫十年走
-    // 十宫，三方四正覆盖 10×4 个宫位，几乎盖满全盘——只要大限三方会了禄马，
-    // 窗口内几乎必有流年也逢（探针实测双层与单层计数相同）。故取大限层，
-    // 结论已在 no.1 why 里交代，不算放宽。
-    // 「身命虽弱」：命宫与身宫皆弱（宫弱口径见头部）。
-    // 「逢禄马」：限命三方四正会禄（禄存/化禄）且会天马。
+    // "두 개의 한계"에 대한 일반적인 설명은 대한 및 유년의 이중 레이어입니다. 유년 레이어는 형상에 따라 거의 유휴 상태입니다. 유년명궁 10년 후
+    // 열 번째 집에서 삼방사정은 10×4 궁을 덮고 있으며 거의 전체 지역을 덮고 있습니다. 세 파티 대한이 Luma를 만나는 한,
+    // 창에 유년이 거의 확실하게 있을 것입니다(프로브에 의해 측정된 이중층 및 단일층 개수는 동일합니다). 그러므로 대한 레이어를 취하고,
+    // 결론은 1번 이유에 명시되어 있으며 완화된 것으로 간주되지 않습니다.
+    // "몸도 생명도 약하지만": 명궁, 신궁 모두 약하다(머리 부분에 약한 구경이 보인다).
+    // "펑루마": 수명 제한은 삼방사정이고 행운이 있을 것이며(녹존/화록) 천마가 될 것입니다.
     why:
-      '「二限」双层读法流年层近空转：流年命宫十年走十宫，三方四正覆盖面 ' +
-      '≈ 全盘，大限层成立时流年层几乎必然成立（实测计数相同），故判大限层。',
+      "\"두 번째 한계\" 이중 레이어 읽기 방법 유년 레이어는 거의 유휴 상태입니다. 유년명궁은 10년 만에 10하우스를 통과하고 삼방사정 적용 범위는 다음과 같습니다." +
+      "≒ 전체적으로 대한 레이어가 성립되면 유년 레이어가 거의 확실하게 성립되므로(측정 개수는 동일) 대한 레이어가 결정됩니다.",
     judge: (c, dxs) => {
       if (!isWeakPalace(c, c.mingGongBranch)) return [];
       if (!isWeakPalace(c, c.shenGongBranch)) return [];
@@ -183,13 +180,13 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 2,
     name: '锦上添花',
-    note: '谓限破恶星而行吉地是也',
+    note: "운한의 흉성이 깨지고 길한 자리로 나아가는 경우이다.",
     status: 'derivable',
     unit: '大限',
-    // 「限破恶星」取恶星守限（坐限命宫本宫）；「行吉地」取完整限好口径
-    // （限命宫强 + 三方会吉≥2 + 六煞≤1）——守限那颗煞恰为全三方唯一煞，
-    // 破而不破，正是「锦上添花」。首版只取宫强（无会吉/煞门槛）实测 22%/限、
-    // 96% 的盘都有，无判别力，已收紧。
+    // "사악한 별을 부수는 제한"은 사악한 별을 데리고 한계를 유지합니다 (명궁 자신의 집으로 제한됨). "경서 여행"은 완전 한정 좋은 자질을 취합니다
+    // (명궁 강자 + 삼자 길조 ≥ 2 + 육사악 ≤ 1로 한정) - 한계를 지키는 사악은 삼자 모두 중에서 유일한 악입니다.
+    // 깨지지 않고 깨지는 것은 "케이크 위의 장식"입니다. 첫 번째 버전은 Gong Qiang만 사용합니다(행운/불운에 대한 기준 없음). 실제 측정값은 22%/한도입니다.
+    // 디스크의 96%가 아무런 판단 없이 조여져 있습니다.
     judge: (c, dxs) => dxs.filter(dx =>
       starsAt(c, dx.palaceBranch).some(s => SHA_STARS.includes(s.name)) &&
       isXianHao(c, dx),
@@ -198,13 +195,13 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 3,
     name: '禄衰马困',
-    note: '限逢七杀禄马空亡是也',
+    note: "운한에서 칠살·녹존·천마·공망을 만나는 경우이다.",
     status: 'derivable',
     unit: '大限',
-    // 「限逢七杀」：限命三方四正会七杀（「逢」取会遇，与本表其他「逢」一致）。
-    // 「禄马空亡」：格名自拆为「禄衰」（禄存坐空亡）＋「马困」（天马坐空亡），
-    // 两者并举，取**皆**坐空亡（六空亡星口径，命局状态不限限宫）。
-    // 首版「任一坐空亡」实测 22%/限、66% 的盘都有，无判别力，已收紧。
+    // "칠살로 제한됨": 삼방사정 및 칠살로 제한됩니다("Feng"은 회의를 의미하며 이 표의 다른 "Fun"과 일치함).
+    // "Lu Ma is dead in the air": 이름이 "Lu Sheng"(녹존이 공중에서 사망) + "말이 갇혔습니다"(천마가 공중에서 사망)로 변경됩니다.
+    // 둘 다 같이 가져가고 **를 선택하면 공허 속에서 죽는다(6개의 빈 데스스타의 구경, 운명 상태는 궁에만 국한되지 않는다).
+    // 'Either Sit in the Air'의 첫 번째 버전은 실제로 22%/제한 및 66%의 시장 점유율을 측정했으며 아무런 판단도 없으며 엄격해졌습니다.
     judge: (c, dxs) => dxs.filter(dx => {
       const sf = sanFang(dx.palaceBranch);
       const sha7 = sf.some(b => has(c, b, '七杀'));
@@ -215,14 +212,14 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 4,
     name: '衣锦还乡',
-    note: '少年不遂四十后行墓运是也',
+    note: "소년기에 뜻을 이루지 못하고 마흔 이후 묘운으로 들어가는 경우이다.",
     status: 'disputed',
     unit: '大限',
-    // 「少年不遂」是履历陈述，盘面无判据，本模块只判可判的后半：
-    // 大限起岁 ≥ 40 且限命宫在四墓库（丑辰未戌，墓运口径）。
+    // "청소년 무능력"은 이력서 진술입니다. 이사회에서는 어떠한 판단도 내리지 않습니다. 이 모듈은 판단의 후반부만 판단합니다.
+    // 대한의 시작 연령은 ≥ 40이며, 명궁은 4개의 무덤(Chou Chen Wei Xu, 묘행 구경)으로 제한됩니다.
     why:
-      '「少年不遂」为履历陈述，命盘不可判，仅实现「四十后行墓运」半句：' +
-      '大限起岁 ≥ 40 且限命宫在丑辰未戌。前半句留待使用者自证或他表旁证。',
+      "\"청소년 마비\"는 이력서 진술이며 명반은 판단할 수 없으며 \"40 이후 무덤에서의 행운\"이라는 문장의 절반만 충족됩니다." +
+      "Chou Chen Wei Xu의 대한 시작 연령은 ≥ 40이고 제한은 명궁입니다. 문장의 전반부는 사용자 자신의 증거 또는 정황 증거에 맡깁니다.",
     judge: (c, dxs) => dxs.filter(dx =>
       dx.startAge >= 40 && MU_BRANCHES.includes(dx.palaceBranch),
     ).map(dx => ({ dx })),
@@ -230,14 +227,14 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 5,
     name: '步数无依',
-    note: '前限接后限连绵不分是也',
+    note: "앞 운한과 뒤 운한이 끊김 없이 이어지는 경우이다.",
     status: 'disputed',
     unit: '大限',
-    // 「连绵不分」注家无定解。取读法：相邻两大限的限命宫皆弱（宫弱口径）
-    // ——接连两限都无主星可依，即「无依」；hit 记在后限，why 里带前限宫位。
+    // "연속적이고 구별할 수 없는" 주석가들은 명확한 설명을 갖고 있지 않습니다. 읽는 방법: 인접한 두 대한의 한계 명궁은 모두 약합니다 (공약 구경)
+    // ——두 개의 연속 한도, 즉 "지원 없음"에 의존할 주성이 없습니다. 히트는 후자 한계에 기록되고 왜 전자 한계의 궁이 포함되어 있는지.
     why:
-      '「连绵不分」注家无定解，取「相邻两限限命宫皆弱（无主星可依）」读法，' +
-      'hit 记在后限。宫弱 = 无主星或主星全陷。',
+      "\"연속 및 불가분\"이라는 해설자는 명확한 설명이 없으므로 읽는 방법은 \"두 개의 인접한 극한 명궁이 모두 약합니다(의존할 주성이 없습니다)\"," +
+      "히트는 백 리미트에 기록됩니다. 약한 궁 = 주성 또는 주성이 모두 갇혀 있지 않습니다.",
     judge: (c, dxs) => {
       const out: Array<{ dx: DaXian; detail?: string }> = [];
       for (let i = 1; i < dxs.length; i++) {
@@ -245,7 +242,7 @@ export const DING_ZA_GE: DingZaGe[] = [
         if (isWeakPalace(c, prev.palaceBranch) && isWeakPalace(c, cur.palaceBranch)) {
           out.push({
             dx: cur,
-            detail: `前限 ${prev.startAge}-${prev.endAge} 岁（${palaceAt(c, prev.palaceBranch).name}）连此限皆弱`,
+            detail: `예비${prev.startAge}-${prev.endAge}년 (${palaceAt(c, prev.palaceBranch).name}) 이 한계조차 약하다`,
           });
         }
       }
@@ -255,17 +252,17 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 6,
     name: '水上驾星',
-    note: '一年好一年不好是也',
+    note: "한 해는 좋고 다음 해는 좋지 않은 경우이다.",
     status: 'disputed',
     unit: '流年',
-    // 唯一一条流年格。「好」「不好」原文无判据，自建度量（liuNianGrade，
-    // 口径见头部注释）：凶 = 流年命宫坐生年化忌或坐六煞 ≥2；吉 = 三方会禄
-    // 或会吉 ≥2 且命宫不凶；平 = 其余。「一年好一年不好」= 存在连续两岁
-    // 吉凶相接（中间无平年隔断）。hit 记在交替发生的那对岁次上。
+    // 유일한 그리드는 유년입니다. "좋음"과 "나쁨"의 원문은 기준이 없으며 자체적으로 구축한 척도입니다(liuNianGrade,
+    // 구경(머리에 있는 참고 사항 참조): 불운 = 유년명궁이 생년화기에 앉아 있거나 Liusha ≥2에 앉아 있음; 길조 = 세 사람이 행운을 누릴 것입니다
+    // 아니면 상서로운 일이 될 것입니다. ≥2이고 명궁은 운이 좋지 않습니다. 심지어 = 나머지. "한 해는 좋고 다른 해는 나쁘다" = 2년 연속 존재
+    // 행운과 불운은 서로 뒤따릅니다(그 사이에 평범한 해가 없습니다). 히트는 교대로 발생하는 한 쌍의 연도에 기록됩니다.
     why:
-      '「好」「不好」原文无判据，自建度量判（凶 = 流年命宫坐生年化忌或六煞≥2；' +
-      '吉 = 三方会禄或会吉≥2 且命宫不凶），不计流年四化，故颗粒度粗；' +
-      '流年地支按公历年序推，农历/立春边界年 ±1 岁误差。交替 = 连续两岁吉凶相接。',
+      "\"좋음\"과 \"나쁨\"의 원문에는 기준이 없으며 자체 구성 기준입니다 (사나움 = 유년명궁, 생년화기 또는 여섯 악령 ≥ 2;" +
+      "Ji = 세 당사자가 운이 좋거나 운이 좋을 것입니다. ≥ 2이고 명궁은 나쁘지 않습니다. 유년사화를 제외하면 세분화가 거칠어집니다." +
+      "유년지지는 양력의 연도 순서에 따라 계산되며, 음력/봄 경계 연도의 시작은 ±1년의 오차를 갖습니다. 교대 = 2년 연속 행운과 불운.",
     judge: (c, dxs) => {
       const lastAge = dxs.length ? dxs[dxs.length - 1].endAge : 100;
       const out: Array<{ startAge: number; endAge: number; detail: string }> = [];
@@ -277,7 +274,7 @@ export const DING_ZA_GE: DingZaGe[] = [
           out.push({
             startAge: a,
             endAge: a + 1,
-            detail: `第 ${a}-${a + 1} 岁（虚岁）吉凶交替，后一年流年命宫在 ${palaceAt(c, b2).name}`,
+            detail: `아니요.${a}-${a + 1}연도(세는나이)는 좋은 시기와 나쁜 시기가 번갈아 나타나고 다음 해 유년명궁${palaceAt(c, b2).name}`,
           });
         }
       }
@@ -287,15 +284,15 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 7,
     name: '吉凶相伴',
-    note: '命有主星限前则发限衰不发是也',
+    note: "명궁에 주성이 있고 운한이 앞서면 발복하지만 운한이 쇠하면 발복하지 않는 경우이다.",
     status: 'disputed',
     unit: '大限',
-    // 断句歧义：「命有主星 / 限前则发 / 限衰不发」——「限前」一作「限逢」、
-    // 一作「限强」。取可计量的读法：命宫有主星（前提），本限限好（限好口径
-    // 见头部）则该限为「发」限；限不好则不发。hit = 命有主星且该限限好。
+    // 문장 모호성 : "운명은 주성 / 제한되면 일어난다 / 제한되면 일어나지 않을 것이다" - "Limited"는 "제한된 만남"을 의미하며,
+    // 하나는 "제한된 힘"입니다. 측정 가능한 판독: 명궁에는 주성이 있습니다(전제). 이 한도는 양호합니다(좋은 구경으로 제한됨).
+    // 머리 참조), 한계는 "머리카락" 한계입니다. 한도가 좋지 않으면 전송되지 않습니다. hit = 라이프는 주성 이고 리미트는 좋습니다.
     why:
-      '断句歧义（「限前则发」一作限逢、一作限强），取「命宫有主星且本限限好 ' +
-      '（限命宫强 + 三方会吉≥2 + 六煞≤1）则为发限」读法。',
+      "문장 분할의 모호함(\"보내기 전에 제한되어 있으면\", 한 단어는 충족으로 제한되고, 다른 단어는 강함으로 제한됨), \"명궁에는 주성이 있고 이 제한은 좋습니다.\"" +
+      "(명궁qiang + 삼자 길조 ≥ 2 + 여섯 악령 ≤ 1에 한함), \"법 한계\"의 읽기 방법입니다.",
     judge: (c, dxs) => {
       if (majorsAt(c, c.mingGongBranch).length === 0) return [];
       return dxs.filter(dx => isXianHao(c, dx)).map(dx => ({ dx }));
@@ -304,11 +301,11 @@ export const DING_ZA_GE: DingZaGe[] = [
   {
     no: 8,
     name: '枯木逢春',
-    note: '谓命衰限好是也',
+    note: "본명은 쇠하나 운한이 좋은 경우이다.",
     status: 'derivable',
     unit: '大限',
-    // 「命衰」= 命宫弱（宫弱口径）；「限好」= 限好口径（限命宫强 + 三方会吉
-    // ≥2 + 六煞 ≤1）。与 no.7 的差别只在前提：此条命宫弱，彼条命宫有主星。
+    // "약한 생명" = 명궁 약함(약한 궁 구경); "한정 상품" = 제한된 좋은 구경(한정 명궁 강함 + 3인이 행운을 누림)
+    // ≥2 + 리우샤 ≤1). no.7과의 차이점은 전제에만 있습니다. 이 명궁은 약하고 명궁에는 주성이 있습니다.
     judge: (c, dxs) => {
       if (!isWeakPalace(c, c.mingGongBranch)) return [];
       return dxs.filter(dx => isXianHao(c, dx)).map(dx => ({ dx }));
@@ -316,32 +313,31 @@ export const DING_ZA_GE: DingZaGe[] = [
   },
 ];
 
-// ────────────────── 入口 ──────────────────
+// ───────────────── 입구 ──────────────────
 
 export interface DingZaHit {
   no: number;
   name: string;
   note: string;
   status: GeStatus;
-  /** 命中单位：大限 / 流年 */
+  /* * 타격 유닛 : 대한 / 유년 */
   unit: '大限' | '流年';
-  /** 大限起岁（大限格）或交替起始岁（流年格） */
+  /* * 대한 시작 연령(대한 그리드) 또는 대체 시작 연령(유년 그리드) */
   startAge?: number;
   endAge?: number;
-  /** 限命宫（大限格）或后一年流年命宫（流年格） */
+  /* *다음 연도에는 명궁(대한 그리드) 또는 유년명궁(유년 그리드)로 제한됩니다. */
   palaceBranch?: number;
   palaceName?: string;
   detail?: string;
   why?: string;
 }
 
-/**
- * 判一张盘的〈定杂局〉格。返回全量命中（每个大限/流年窗一条）。
+/* *
+ * 게임의 패턴을 결정합니다. 돌아가기는 전체 히트를 기록합니다(각 대한/유년 창에 대해 하나씩).
  *
- * - `opts.age` 给定时只返回覆盖该虚岁的命中（大限：startAge ≤ age ≤ endAge；
- *   流年窗：startAge 或 endAge 等于 age）。
- * - 返回顺序：先按格序号、再按起岁。
- */
+ * - `opts.age`가 주어지면 돌아가기만이 세는나이의 히트를 커버합니다.
+ * 유년 창: startAge 또는 endAge는 연령과 같습니다).
+ * - 돌아가기 순서: 먼저 그리드 번호를 누른 다음 시작 연령을 누릅니다. */
 export function detectDingZa(
   chart: ZiweiChart,
   opts?: { age?: number },
@@ -381,10 +377,10 @@ export function detectDingZa(
   return out;
 }
 
-/** 可判定条目数（八条全部有实现，disputed 也带） */
+/* * 판정 가능한 항목 수(8개 항목 모두 구현, 쟁점 항목도 포함) */
 export const DING_ZA_JUDGEABLE = DING_ZA_GE.filter(g => !!g.judge).length;
 
-/** 按「当前虚岁」取当前运限的杂局命中（UI 便捷入口） */
+/* * "현재 세는나이"를 누르면 현재 행운 한도의 잡다한 히트를 얻을 수 있습니다(UI 편리 입장) */
 export function getCurrentDingZa(chart: ZiweiChart): DingZaHit[] {
   return detectDingZa(chart, { age: chart.currentAge });
 }

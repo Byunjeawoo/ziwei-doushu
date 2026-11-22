@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { motion } from 'framer-motion';
 import type { Palace, Star } from '@/lib/ziwei/types';
 import { STEMS, BRANCHES } from '@/lib/ziwei/constants';
@@ -18,11 +19,11 @@ interface PalaceCellProps {
   isSelected?: boolean;
   isSanFang?: boolean;
   delay?: number;
-  /** 叠加四化：星名 → 四化类型（'禄'/'权'/'科'/'忌'） */
+  /* * 오버레이 사화: 별 이름 → 사화 유형('Lu'/'Quan'/'Ke'/'Ji') */
   overlayStarSiHua?: Record<string, string>;
-  /** 叠加标签：'年'（流年）或 '限'（大限） */
+  /* * 오버레이 라벨: '연도'(유년) 또는 '한정'(대한) */
   overlayLabel?: string;
-  /** 点击叠加四化 badge 回调 */
+  /* * 사화 배지 콜백을 오버레이하려면 클릭하세요. */
   onSiHuaClick?: (starName: string, siHua: string) => void;
 }
 
@@ -54,8 +55,8 @@ const SiHuaBadge = ({
       )}
       onClick={onClick}
     >
-      {overlay && label && <span className="mr-px opacity-70">{label}</span>}
-      {siHua}
+      {koNode(overlay && label && <span className="mr-px opacity-70">{koNode(label)}</span>)}
+      {koNode(siHua)}
     </span>
   );
 };
@@ -100,16 +101,16 @@ export default function PalaceCell({
       }}
     >
       {/* 大限年龄 */}
-      {daXianAge && (
+      {koNode(daXianAge && (
         <div className={clsx(
           'absolute top-1 right-1 text-[9px] font-mono tabular-nums',
           isCurrentDaXian ? 'text-purple-400' : ''
         )}
           style={!isCurrentDaXian ? { color: 'var(--t-faint)', opacity: 0.75 } : undefined}
         >
-          {daXianAge[0]}–{daXianAge[1]}
+          {koNode(daXianAge[0])}–{koNode(daXianAge[1])}
         </div>
-      )}
+      ))}
 
       {/* 宫名行 */}
       <div className="flex items-center gap-1 mb-0.5 pr-8">
@@ -118,25 +119,25 @@ export default function PalaceCell({
         )}
           style={!isMingGong && !isShenGong ? { color: 'var(--t-faint)' } : undefined}
         >
-          {name}
+          {koNode(name)}
         </span>
-        {isMingGong && (
-          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight">命</span>
-        )}
-        {isShenGong && (
-          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight">身</span>
-        )}
+        {koNode(isMingGong && (
+          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight">{koNode("운명")}</span>
+        ))}
+        {koNode(isShenGong && (
+          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight">{koNode("몸")}</span>
+        ))}
       </div>
 
       {/* 干支 */}
-      <div className="text-[9px] font-mono mb-1" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{ganzhi}</div>
+      <div className="text-[9px] font-mono mb-1" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{koNode(ganzhi)}</div>
 
       {/* 主星 */}
       <div className="flex flex-col gap-0.5 flex-1">
-        {majorStars.length === 0 && (
-          <span className="text-[10px] italic" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>空宫</span>
-        )}
-        {majorStars.map((star) => {
+        {koNode(majorStars.length === 0 && (
+          <span className="text-[10px] italic" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>{koNode("공궁")}</span>
+        ))}
+        {koNode(majorStars.map((star) => {
           const overlaySiHua = overlayStarSiHua?.[star.name];
           return (
             <div
@@ -148,10 +149,10 @@ export default function PalaceCell({
                 'text-[13px] leading-tight font-bold tracking-tight cursor-pointer hover:brightness-125 transition-all',
                 star.brightness === 'bright' ? 'text-amber-300' : star.brightness === 'dim' ? 'text-amber-700/80' : 'text-amber-500',
               )}>
-                {star.name}
+                {koNode(star.name)}
               </span>
-              {star.siHua && <SiHuaBadge siHua={star.siHua} />}
-              {overlaySiHua && (
+              {koNode(star.siHua && <SiHuaBadge siHua={star.siHua} />)}
+              {koNode(overlaySiHua && (
                 <SiHuaBadge
                   siHua={overlaySiHua}
                   overlay
@@ -161,22 +162,22 @@ export default function PalaceCell({
                     onSiHuaClick?.(star.name, overlaySiHua);
                   }}
                 />
-              )}
+              ))}
             </div>
           );
-        })}
+        }))}
       </div>
 
       {/* 吉星 */}
-      {luckyStars.length > 0 && (
+      {koNode(luckyStars.length > 0 && (
         <div className="flex flex-wrap gap-x-1 mt-0.5">
-          {luckyStars.map(s => {
+          {koNode(luckyStars.map(s => {
             const overlaySiHua = overlayStarSiHua?.[s.name];
             return (
               <span key={s.name} className="inline-flex items-center text-[9px] text-sky-500/70 leading-tight">
-                {s.name}
-                {s.siHua && <SiHuaBadge siHua={s.siHua} />}
-                {overlaySiHua && (
+                {koNode(s.name)}
+                {koNode(s.siHua && <SiHuaBadge siHua={s.siHua} />)}
+                {koNode(overlaySiHua && (
                   <SiHuaBadge
                     siHua={overlaySiHua}
                     overlay
@@ -186,46 +187,46 @@ export default function PalaceCell({
                       onSiHuaClick?.(s.name, overlaySiHua);
                     }}
                   />
-                )}
+                ))}
               </span>
             );
-          })}
+          }))}
         </div>
-      )}
+      ))}
 
       {/* 煞星 */}
-      {shaStars.length > 0 && (
+      {koNode(shaStars.length > 0 && (
         <div className="flex flex-wrap gap-x-1">
-          {shaStars.map(s => (
+          {koNode(shaStars.map(s => (
             <span key={s.name} className="text-[9px] text-red-500/60 leading-tight">
-              {s.name}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
+              {koNode(s.name)}{koNode(s.siHua && <SiHuaBadge siHua={s.siHua} />)}
             </span>
-          ))}
+          )))}
         </div>
-      )}
+      ))}
 
       {/* 杂曜 */}
-      {minorStars.length > 0 && (
+      {koNode(minorStars.length > 0 && (
         <div className="flex flex-wrap gap-x-1">
-          {minorStars.map(s => (
+          {koNode(minorStars.map(s => (
             <span key={s.name} className="text-[9px] leading-tight" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>
-              {s.name}{s.brightnessRaw ? `[${s.brightnessRaw}]` : ''}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
+              {koNode(s.name)}{koNode(s.brightnessRaw ? `[${s.brightnessRaw}]` : '')}{koNode(s.siHua && <SiHuaBadge siHua={s.siHua} />)}
             </span>
-          ))}
+          )))}
         </div>
-      )}
+      ))}
 
       {/* 宫底左下角竖排：博士、将前、岁前；三组数据均由 ChartBoard 按当前视图计算。 */}
-      {shierShen && (
+      {koNode(shierShen && (
         <div
           className="flex flex-col items-start mt-1 pt-0.5 text-[8px] leading-tight"
           style={{ borderTop: '1px dashed var(--t-border)', color: 'var(--t-faint)' }}
         >
-          <span data-shier-shen="boshi" className="text-violet-500/70">{shierShen.boshi}</span>
-          <span data-shier-shen="jiangQian">{shierShen.jiangQian}</span>
-          <span data-shier-shen="suiQian">{shierShen.suiQian}</span>
+          <span data-shier-shen="boshi" className="text-violet-500/70">{koNode(shierShen.boshi)}</span>
+          <span data-shier-shen="jiangQian">{koNode(shierShen.jiangQian)}</span>
+          <span data-shier-shen="suiQian">{koNode(shierShen.suiQian)}</span>
         </div>
-      )}
+      ))}
 
     </motion.div>
   );

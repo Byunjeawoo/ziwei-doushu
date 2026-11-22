@@ -1,43 +1,42 @@
-/**
- * 古籍原典查询库 — 类型定义
+/* *
+ * 고대 서적 원본 쿼리 데이터베이스 - 유형 정의
  *
- * 设计：所有古籍以 JSON 静态数据打包到代码（公版无版权风险）
- * Next.js 启动时一次性加载到内存，零 DB 依赖
- */
+ * 디자인: 모든 고대 서적은 JSON 정적 데이터가 포함된 코드로 패키징됩니다(공개 버전에서는 저작권 위험 없음).
+ * Next.js는 시작 시 DB 종속성 없이 한 번 메모리에 로드됩니다. */
 
 export interface Paragraph {
-  /** 段落唯一 id（用于锚点跳转） */
+  /* * 단락 고유 ID(앵커 점프용) */
   id: string;
-  /** 段落序号（章节内） */
+  /* * 단락 번호(장 내) */
   idx: number;
-  /** 段落原文（古文） */
+  /* *단락의 원문(고대 중국어) */
   text: string;
-  /** 现代翻译（可选，未来填充） */
+  /* * 현대 번역(선택사항, 향후 작성 예정) */
   translation?: string;
-  /** 倪师注解（可选，标注来源） */
+  /* * 니하이샤 선생 주석(선택 사항, 소스 표시) */
   niNote?: string;
 }
 
 export interface Chapter {
-  /** 章节标题（如"卷一"、"总论篇"）*/
+  /* * 장 제목(예: "1권", "일반 장") */
   title: string;
-  /** 章节副标题/简介（可选）*/
+  /* * 장 부제/소개(선택) */
   subtitle?: string;
   paragraphs: Paragraph[];
 }
 
 export interface Book {
-  /** 书名 */
+  /* * 책 제목 */
   title: string;
-  /** 书 slug（URL 用，如 'guisuifu'）*/
+  /* * 도서 슬러그('guisuifu'와 같은 URL용) */
   slug: string;
-  /** 朝代 */
+  /* * 왕조 */
   dynasty: string;
-  /** 作者（多人或不详时填"不详"或多人）*/
+  /* *저자(여러 명 또는 알 수 없는 경우에는 "알 수 없음" 또는 여러 명으로 기재해 주세요) */
   author: string;
-  /** 简介 */
+  /* * 소개 */
   intro: string;
-  /** 总字数（粗略）*/
+  /* *총 단어 수(대략) */
   wordCount: number;
   chapters: Chapter[];
 }
@@ -47,8 +46,8 @@ export interface SearchHit {
   bookTitle: string;
   chapterTitle: string;
   paragraphId: string;
-  /** 高亮片段（含 <mark> 标签） */
+  /* * 하이라이트 세그먼트(<mark> 태그 포함) */
   snippet: string;
-  /** 原文 */
+  /* *원문 */
   text: string;
 }

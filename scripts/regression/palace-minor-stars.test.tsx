@@ -1,3 +1,4 @@
+import { ko } from '../../lib/i18n/ko';
 import assert from 'node:assert/strict';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -21,7 +22,7 @@ for (const birth of samples) {
   for (const palace of chart.palaces) {
     const html = renderToStaticMarkup(React.createElement(PalaceCell, { palace }));
     for (const star of palace.stars) {
-      assert.ok(html.includes(star.name), `${palace.name} is missing ${star.name}`);
+      assert.ok(html.includes(ko(star.name)), `${palace.name} is missing ${star.name}`);
       if (star.type === 'minor') minorCount++;
     }
   }
@@ -32,6 +33,6 @@ const palace = generateChart(samples[0]).palaces[0];
 const html = renderToStaticMarkup(React.createElement(PalaceCell, {
   palace: { ...palace, stars: [{ name: '测试杂耀', type: 'minor', brightnessRaw: '庙', siHua: '禄' }] },
 }));
-assert.match(html, /测试杂耀\[庙\]/, 'minor star brightness should be visible');
-assert.match(html, />禄<\//, 'minor star sihua should be visible when present');
+assert.match(html, /시험 잡성\[묘\]/, 'minor star brightness should be visible');
+assert.match(html, />록<\//, 'minor star sihua should be visible when present');
 console.log(`PalaceCell renders all stars in ${samples.length} charts, including ${minorCount} minor stars`);

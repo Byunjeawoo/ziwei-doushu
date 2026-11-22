@@ -1,16 +1,17 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// 公告版本号——以后想再弹新公告，改这里就行（旧版 key 失效，新版重新弹一次）
+// 공지사항 버전 번호 - 나중에 새로운 공지사항을 재생하려면 여기에서 변경하면 됩니다. (이전 버전 키는 유효하지 않으며 새 버전이 다시 재생됩니다.)
 const ANNOUNCEMENT_VERSION = '2026-05-01';
 const STORAGE_KEY = `announcement_seen_${ANNOUNCEMENT_VERSION}`;
 
 export default function AnnouncementModal() {
-  // 默认不开，client 端 useEffect 检查 localStorage 后立即决定是否弹出。
-  // 没看过 → 立即覆盖首页；看过 → 不再弹。
+  // 기본적으로 비활성화되어 있는 클라이언트 측 useEffect는 localStorage를 확인하고 즉시 팝업 여부를 결정합니다.
+  // 아직 보지 못했다면 → 즉시 홈페이지를 덮으세요. 본 적이 있다면 → 다시 재생하지 마세요.
   const [open, setOpen] = useState(false);
-  const [decided, setDecided] = useState(false); // hydration 完成标志
+  const [decided, setDecided] = useState(false); // 수분 공급 완료 플래그
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -21,7 +22,7 @@ export default function AnnouncementModal() {
     setDecided(true);
   }, []);
 
-  // 公告打开时锁住 body 滚动，防止背后首页可滚（仪式感更强）
+  // 공지사항이 열릴 때 본문 스크롤을 잠그면 공지사항 뒤의 홈 페이지가 스크롤되지 않도록 방지됩니다(의례적인 느낌이 더 강함).
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (open) {
@@ -40,13 +41,13 @@ export default function AnnouncementModal() {
 
   return (
     <AnimatePresence>
-      {open && (
+      {koNode(open && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          // 不点击外部关闭——强制用户按"我知道了"按钮才能进入首页
+          // 외부 닫기를 클릭하지 않음 - 사용자가 홈페이지에 들어가려면 "I Got It" 버튼을 눌러야 함
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
             background: 'rgba(20,12,2,0.88)',
@@ -87,12 +88,10 @@ export default function AnnouncementModal() {
               <div style={{ fontSize: '10px', letterSpacing: '0.4em', color: '#b8922a', opacity: 0.7, marginBottom: '6px' }}>
                 A LETTER TO USERS
               </div>
-              <h2 style={{ fontSize: '19px', fontWeight: 700, color: '#3d2f10', letterSpacing: '0.08em', margin: 0 }}>
-                致正在使用这个平台的你
-              </h2>
+              <h2 style={{ fontSize: '19px', fontWeight: 700, color: '#3d2f10', letterSpacing: '0.08em', margin: 0 }}>{koNode("본 플랫폼을 이용하시는 여러분께")}</h2>
               <button
                 onClick={close}
-                aria-label="关闭"
+                aria-label={ko("닫기")}
                 style={{
                   position: 'absolute', top: '14px', right: '16px',
                   width: '28px', height: '28px',
@@ -116,14 +115,10 @@ export default function AnnouncementModal() {
               flexShrink: 0,
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: '10px', letterSpacing: '0.3em', color: '#c45a2d', marginBottom: '4px', fontWeight: 600 }}>
-                LIMITED TIME · 限时回馈
-              </div>
+              <div style={{ fontSize: '10px', letterSpacing: '0.3em', color: '#c45a2d', marginBottom: '4px', fontWeight: 600 }}>{koNode("제한된 시간 · 제한된 시간 피드백")}</div>
               <div style={{ fontSize: '14px', color: '#8b3a1a', fontWeight: 600, lineHeight: 1.6 }}>
-                <span style={{ fontSize: '16px', color: '#c45a2d', fontWeight: 700 }}>5 月 1 日 — 5 月 8 日</span>
-                <br />
-                平台全部功能 + AI 提问 全部免费开放
-              </div>
+                <span style={{ fontSize: '16px', color: '#c45a2d', fontWeight: 700 }}>{koNode("5월 1일 - 5월 8일")}</span>
+                <br />{koNode("플랫폼의 모든 기능 + AI 질문은 모두 무료이며 대중에게 공개됩니다.")}</div>
             </div>
 
             {/* 正文（可滚动）*/}
@@ -135,15 +130,9 @@ export default function AnnouncementModal() {
               color: '#5a4a30',
               flex: 1,
             }}>
-              <p style={{ margin: '0 0 12px' }}>
-                说实话，我真的没想到会有这么大的流量。
-              </p>
-              <p style={{ margin: '0 0 12px' }}>
-                最开始做这个平台，我的初心其实很简单：在 AI 时代，把倪师这套原本复杂、门槛很高的体系，尽量做得更简单、更高效、更容易理解。
-              </p>
-              <p style={{ margin: '0 0 12px' }}>
-                不一定每个人都要先学很久、看很多书，才能接触这些内容。我们希望通过这个平台，让大家用更轻松的方式，获得一些对自我、人生阶段、选择方向的参考和启发。
-              </p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("솔직히 말해서 이렇게 엄청난 트래픽이 발생할 줄은 정말 예상하지 못했습니다.")}</p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("처음 이 플랫폼을 구축하기 시작했을 때 원래 의도는 실제로 매우 간단했습니다. AI 시대에는 원래 복잡하고 임계값이 높은 시스템인 니하이샤 선생을 더 간단하고 효율적이며 이해하기 쉽게 만들려고 노력했습니다.")}</p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("모든 사람이 이러한 내용을 접하기 전에 오랫동안 공부하고 많은 책을 읽어야 하는 것은 아닙니다. 우리는 이 플랫폼을 통해 모든 사람이 자신과 인생 단계, 선택한 방향에 대한 참고와 영감을 더 쉽게 얻을 수 있기를 바랍니다.")}</p>
               <p style={{
                 margin: '0 0 12px',
                 padding: '10px 14px',
@@ -152,24 +141,13 @@ export default function AnnouncementModal() {
                 borderRadius: '0 8px 8px 0',
                 fontStyle: 'italic',
                 color: '#7a5e2a',
-              }}>
-                倪师曾说过一句话：人怎么可能发明出完全没有用的东西呢？
+              }}>{koNode("니하이샤 선생은 한때 다음과 같이 말했습니다. 사람들이 완전히 쓸모없는 것을 어떻게 발명할 수 있습니까?")}</p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("나는 항상 역경이 이와 같고 자미두수도 마찬가지라고 느꼈습니다. 그것들의 진정한 가치는 사람들이 어떤 결과에 갇히는 것이 아니라 우리 자신의 성격 관성, 삶의 문제 및 선택 방향을 더 일찍 볼 수 있게 해준다는 것입니다. 당신이 그것을 본 후에야 당신은 조정할 기회를 가질 수 있습니다. 그것을 이해한 후에야 더 나아질 수 있는 기회를 얻을 수 있습니다.")}</p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("\"당신이 지금 보고 있는 것은 실제로 당신의 운명의 일부이다\"라고 말하는 사람들에 대해서는 나는 너무 많은 언급을 하지 않겠습니다.")}</p>
+              <p style={{ margin: '0 0 12px' }}>{koNode("지난 며칠 동안 Xiaohongshu가 내 계정을 압수했습니다.")}<strong style={{ color: '#c45a2d' }}>{koNode("5월 3일부터 정상 업데이트가 재개됩니다.")}</strong>
               </p>
-              <p style={{ margin: '0 0 12px' }}>
-                我一直觉得，易经如此，紫微斗数也是如此。它们真正有价值的地方，不是让人被某个结果困住，而是让我们更早看见自己的性格惯性、人生课题和选择方向。看见之后，才有机会调整；理解之后，才有机会变得更好。
-              </p>
-              <p style={{ margin: '0 0 12px' }}>
-                至于那些说&ldquo;你当下在看这些，其实也是命运的一部分&rdquo;之类的话，我就不多评价了。
-              </p>
-              <p style={{ margin: '0 0 12px' }}>
-                这几天账号被小红书抬走了，<strong style={{ color: '#c45a2d' }}>5 月 3 号开始恢复正常更新。</strong>
-              </p>
-              <p style={{ margin: '0 0 16px', color: '#3d2f10', fontWeight: 500 }}>
-                最后，真心祝愿大家都能越来越了解自己，越来越爱自己，也越来越有能力爱身边的人。
-              </p>
-              <p style={{ margin: 0, textAlign: 'right', fontSize: '13px', color: '#7a5e2a' }}>
-                ——谢谢大家 🙏
-              </p>
+              <p style={{ margin: '0 0 16px', color: '#3d2f10', fontWeight: 500 }}>{koNode("마지막으로, 모든 분들이 자신을 더 잘 이해하고, 자신을 더욱 사랑하며, 주변 사람들도 더욱 사랑할 수 있기를 진심으로 바랍니다.")}</p>
+              <p style={{ margin: 0, textAlign: 'right', fontSize: '13px', color: '#7a5e2a' }}>{koNode("——모두들 감사합니다 🙏")}</p>
             </div>
 
             {/* 底部按钮 */}
@@ -196,13 +174,11 @@ export default function AnnouncementModal() {
                   cursor: 'pointer',
                   boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
                 }}
-              >
-                我知道了
-              </button>
+              >{koNode("알아요")}</button>
             </div>
           </motion.div>
         </motion.div>
-      )}
+      ))}
     </AnimatePresence>
   );
 }

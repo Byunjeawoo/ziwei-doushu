@@ -8,20 +8,20 @@ export interface ProvinceInfo {
   cities: CityInfo[];
 }
 
-// ★ 2026-10-07 用户反馈「出生地点还不够全」→ 补全全国区县（直辖市以外 2724 个，挂在各地级市下）。
-//   区县不放进本表：本表经 BirthForm → LocationPicker 在 /chart、/heming 首屏静态依赖图上，
-//   区县表与拼音表在 lib/ziwei/counties.generated.ts、lib/i18n/county-pinyin.generated.ts，
-//   打开地点选择框时才动态加载（lib/ziwei/county-data.ts）。区县选中后城市字段存成「地级市·区县」，
-//   见 lib/ziwei/county-label.ts。省直辖县级单位（仙桃、海南各市县、新疆兵团各市）仍是本表的市一级。
+// ★ 2026-10-07 사용자 피드백 "출생지가 충분하지 않습니다" → 국가의 구 및 군(지급시 목록에 있는 외부 직할시 2724개)을 완료합니다.
+// 이 테이블에는 구,군이 포함되지 않습니다. 이 테이블은 /chart 및 /heming 첫 화면의 정적 종속성 그래프에서 BirthForm → LocationPicker를 통해 전달됩니다.
+// 구역 및 카운티 테이블과 병음 테이블은 lib/ziwei/counties.generated.ts, lib/i18n/county-pinyin.generated.ts에 있습니다.
+// 위치 선택 상자가 열릴 때 동적으로 로드됩니다(lib/ziwei/county-data.ts). 구, 군을 선택하면 도시 필드가 "도급 시·구 및 군"으로 저장됩니다.
+// lib/ziwei/county-label.ts를 참조하세요. 이 표에서는 성 정부 직속 현급 단위(셴타오, 하이난 시현, 신장군 시)가 여전히 시급에 속합니다.
 export const PROVINCES: ProvinceInfo[] = [
-  // ─── 直辖市 ───────────────────────────────────────────
+  // ───지방자치단체────────────────────────────────────────
   {
     name: '北京市',
     cities: [
-      // ★ 2026-08-23 用户反馈「直辖市内部也有分区，希望加上更准一些」→ 补全 16 区。
-      //   保留「北京」市级条目在首位：老用户历史命盘存的是它，删掉会对不上。
-      //   全市经度跨度 115.98–117.12（延庆↔平谷），约 1.14°，真太阳时最大差约 4.6 分钟——
-      //   出生时刻落在时辰交界 ±5 分钟内时，选市中心与选边缘区会得到不同时辰，整盘皆变。
+      // ★ 2026-08-23 유저 피드백 "지자체 내에도 구분이 있는데 좀 더 정확했으면 좋겠다" → 16개 자치구 완료.
+      // 처음에 "Beijing" 도시 항목을 유지하십시오. 이전 사용자의 기록 명반이며 삭제해도 수정되지 않습니다.
+      // 도시의 경도 범위는 115.98~117.12(옌칭 ← 핑구), 약 1.14°, 진태양시의 최대 차이는 약 4.6분——
+      // 생성 시간이 시진 교차점의 ±5분 이내일 때 도심이나 가장자리 지역을 선택하면 시진이 달라지며 보드 전체가 변경됩니다.
       { name: '北京', longitude: 116.4 },
       { name: '东城', longitude: 116.42 },
       { name: '西城', longitude: 116.37 },
@@ -44,7 +44,7 @@ export const PROVINCES: ProvinceInfo[] = [
   {
     name: '天津市',
     cities: [
-      // 跨度 116.97–117.83（静海↔宁河），约 0.86°，真太阳时最大差约 3.4 分钟
+      // 경간 116.97–117.83 (Jinghai←Ninghe), 약 0.86°, 진태양시 최대차는 약 3.4분
       { name: '天津', longitude: 117.2 },
       { name: '和平', longitude: 117.21 },
       { name: '河东', longitude: 117.24 },
@@ -67,7 +67,7 @@ export const PROVINCES: ProvinceInfo[] = [
   {
     name: '上海市',
     cities: [
-      // 跨度 121.12–121.56（青浦↔浦东新区），约 0.44°，真太阳时最大差约 1.8 分钟
+      // 경간 121.12~121.56(칭푸 ← 푸동신구) 약 0.44°, 진태양시 최대차는 약 1.8분
       { name: '上海', longitude: 121.5 },
       { name: '黄浦', longitude: 121.49 },
       { name: '徐汇', longitude: 121.44 },
@@ -90,7 +90,7 @@ export const PROVINCES: ProvinceInfo[] = [
   {
     name: '重庆市',
     cities: [
-      // 主城九区
+      // 주요 도시의 9구역
       { name: '渝中', longitude: 106.6 },
       { name: '大渡口', longitude: 106.5 },
       { name: '江北', longitude: 106.6 },
@@ -100,7 +100,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '北碚', longitude: 106.4 },
       { name: '渝北', longitude: 106.6 },
       { name: '巴南', longitude: 106.5 },
-      // 远郊区
+      // 외곽 교외
       { name: '万州', longitude: 108.4 },
       { name: '涪陵', longitude: 107.4 },
       { name: '黔江', longitude: 108.8 },
@@ -118,7 +118,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '开州', longitude: 108.4 },
       { name: '梁平', longitude: 107.8 },
       { name: '武隆', longitude: 107.8 },
-      // 县
+      // 카운티
       { name: '城口', longitude: 108.7 },
       { name: '丰都', longitude: 107.7 },
       { name: '垫江', longitude: 107.4 },
@@ -127,7 +127,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '奉节', longitude: 109.5 },
       { name: '巫山', longitude: 109.9 },
       { name: '巫溪', longitude: 109.6 },
-      // 自治县
+      // 자치현
       { name: '石柱', longitude: 108.1 },
       { name: '秀山', longitude: 109.0 },
       { name: '酉阳', longitude: 108.8 },
@@ -135,7 +135,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 华北 ─────────────────────────────────────────────
+  // ─── 중국 북부 ─────────────────────────────────────────
   {
     name: '河北省',
     cities: [
@@ -186,7 +186,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 东北 ─────────────────────────────────────────────
+  // ─── 북동부 ─────────────────────────────────────────
   {
     name: '辽宁省',
     cities: [
@@ -240,7 +240,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 华东 ─────────────────────────────────────────────
+  // ─── 중국 동부 ─────────────────────────────────────────
   {
     name: '江苏省',
     cities: [
@@ -348,7 +348,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 华中 ─────────────────────────────────────────────
+  // ─── 중국 중부 ────────────────────────────────────────
   {
     name: '河南省',
     cities: [
@@ -391,7 +391,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '仙桃', longitude: 113.4 },
       { name: '潜江', longitude: 112.9 },
       { name: '天门', longitude: 113.2 },
-      // ★ 2026-10-07 补省直辖县级单位（经度取 data/geo/cn-counties-2023.json）
+      // ★ 2026-10-07 보충 지방 수준 카운티 수준 단위(경도는 data/geo/cn-counties-2023.json에서 가져옴)
       { name: '神农架', longitude: 110.67 },
     ],
   },
@@ -415,7 +415,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 华南 ─────────────────────────────────────────────
+  // ─── 중국 남부 ─────────────────────────────────────────
   {
     name: '广东省',
     cities: [
@@ -473,7 +473,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '陵水', longitude: 110.0 },
       { name: '乐东', longitude: 109.2 },
       { name: '五指山', longitude: 109.5 },
-      // ★ 2026-10-07 补齐省直辖市县（经度取 data/geo/cn-counties-2023.json）
+      // ★ 2026-10-07 도, 시, 군 작성 (경도는 data/geo/cn-counties-2023.json에서 가져옴)
       { name: '东方', longitude: 108.65 },
       { name: '定安', longitude: 110.33 },
       { name: '屯昌', longitude: 110.1 },
@@ -487,7 +487,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 西南 ─────────────────────────────────────────────
+  // ─── 남서부 ─────────────────────────────────────────
   {
     name: '四川省',
     cities: [
@@ -562,7 +562,7 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // ─── 西北 ─────────────────────────────────────────────
+  // ─── 북서부 ─────────────────────────────────────────
   {
     name: '陕西省',
     cities: [
@@ -640,7 +640,7 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '塔城', longitude: 83.0 },
       { name: '阿勒泰', longitude: 88.1 },
       { name: '石河子', longitude: 86.1 },
-      // ★ 2026-10-07 补齐自治区直辖县级市（兵团各市，经度取 data/geo/cn-counties-2023.json）
+      // ★ 2026-10-07 자치구 직속 현급 도시 완성(군단 내 각 도시의 경도는 data/geo/cn-counties-2023.json에서 가져옴)
       { name: '阿拉尔', longitude: 81.27 },
       { name: '图木舒克', longitude: 79.07 },
       { name: '五家渠', longitude: 87.54 },
@@ -652,11 +652,11 @@ export const PROVINCES: ProvinceInfo[] = [
       { name: '胡杨河', longitude: 84.83 },
       { name: '新星', longitude: 93.75 },
       { name: '白杨', longitude: 82.9 },
-      { name: '塔什库尔干（中国最西）', longitude: 75.2 },
+      { name: "Taxkorgan (중국의 가장 서쪽 부분)", longitude: 75.2 },
     ],
   },
 
-  // ─── 特别行政区 / 台湾 ──────────────────────────────────
+  // ─── 특별행정구 / 대만 ─────────────────────────────────
   {
     name: '香港特别行政区',
     cities: [

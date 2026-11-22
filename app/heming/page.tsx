@@ -1,4 +1,5 @@
 'use client';
+import { ko, koNode } from '@/lib/i18n/ko';
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import BirthForm, { type BirthFormState } from '@/components/BirthForm';
@@ -7,18 +8,18 @@ import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
 import { useTheme } from '@/components/ThemeProvider';
 
-// ─── AiContent 渲染器（与 InsightPanel 一致）────────────────
+// ─── AiContent 렌더러(InsightPanel과 일치)────────────────
 function AiContent({ text, streaming }: { text: string; streaming?: boolean }) {
   const lines = text.split('\n');
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      {lines.map((line, i) => {
+      {koNode(lines.map((line, i) => {
         const sectionMatch = line.match(/^\*\*【(.+?)】\*\*$/);
         if (sectionMatch) {
           return (
             <div key={i} style={{ paddingTop: i === 0 ? 0 : '14px', paddingBottom: '4px' }}>
               <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ac)', letterSpacing: '0.04em' }}>
-                【{sectionMatch[1]}】
+                【{koNode(sectionMatch[1])}】
               </span>
             </div>
           );
@@ -27,22 +28,22 @@ function AiContent({ text, streaming }: { text: string; streaming?: boolean }) {
         const parts = line.split(/\*\*(.+?)\*\*/);
         return (
           <div key={i} style={{ fontSize: '13px', lineHeight: 1.75, color: 'var(--tx-2)' }}>
-            {parts.map((part, j) =>
+            {koNode(parts.map((part, j) =>
               j % 2 === 0
                 ? part
-                : <strong key={j} style={{ fontWeight: 500, color: 'var(--tx-0)' }}>{part}</strong>
-            )}
+                : <strong key={j} style={{ fontWeight: 500, color: 'var(--tx-0)' }}>{koNode(part)}</strong>
+            ))}
           </div>
         );
-      })}
-      {streaming && (
+      }))}
+      {koNode(streaming && (
         <span style={{
           display: 'inline-block', width: '7px', height: '13px',
           background: 'var(--ac)', opacity: 0.5, borderRadius: '2px',
           animation: 'pulse 1s ease-in-out infinite',
           verticalAlign: 'middle', marginLeft: '2px',
         }} />
-      )}
+      ))}
     </div>
   );
 }
@@ -52,25 +53,25 @@ export default function HemingPage() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  // ─── 双方命盘状态 ─────────────────────────────────────────
+  // ───명반 양 당사자 상태 ─────────────────────────────────────
   const [chartA, setChartA] = useState<ZiweiChart | null>(null);
   const [chartB, setChartB] = useState<ZiweiChart | null>(null);
-  // 双方表单状态由 BirthForm onFormSave 同步到此处，统一按钮触发起盘
+  // 여기서 양 당사자의 양식 상태는 BirthForm onFormSave에 의해 동기화되며 통합 버튼은 주문 시작을 트리거합니다.
   const [formA, setFormA] = useState<BirthFormState | null>(null);
   const [formB, setFormB] = useState<BirthFormState | null>(null);
 
-  // ─── AI 合盘分析状态 ─────────────────────────────────────
+  // ─── AI synastry 분석 현황 ───────────────────────────────────
   const [analysis, setAnalysis] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [question, setQuestion] = useState('');
   const [analysisError, setAnalysisError] = useState(false);
-  // 开源版不含 /api/heming：接口 404 时单独说明，而不是让用户反复重试
+  // 오픈소스 버전에는 /api/heming이 포함되어 있지 않습니다. 인터페이스가 404인 경우 사용자가 반복해서 시도하도록 하지 말고 별도로 설명합니다.
   const [apiMissing, setApiMissing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const analysisRef = useRef<HTMLDivElement>(null);
 
-  // ─── 起盘（单次调用，返回 chart 给统一流程使用）──────────
-  // 开源版不含后端 /api/generate：直接用本仓库的排盘引擎在浏览器里起盘
+  // ─── 차트 시작(단일 호출, 돌아가기 차트는 통합 프로세스에 사용됨)──────────
+  // 오픈 소스 버전에는 백엔드 /api/generate가 포함되어 있지 않습니다. 이 웨어하우스의 배반 엔진을 직접 사용하여 브라우저에서 디스크를 실행합니다.
   const generateChart = useCallback(async (info: BirthInfo): Promise<ZiweiChart | null> => {
     try {
       return buildChart(info);
@@ -79,15 +80,15 @@ export default function HemingPage() {
     }
   }, []);
 
-  // 表单是否填齐
+  // 양식이 작성되었나요?
   const isFormReady = (f: BirthFormState | null): boolean =>
     !!(f && f.year && f.month && f.day && f.gender && (f.unknownTime || (f.clockHour !== '' && f.clockMinute !== '')));
 
-  // ─── 统一入口：起盘 + 合盘分析 ─────────────────────────────
+  // ─── 통합입문 : 스타팅차트 + 복합차트분석 ─────────────────────────────
   const runAnalysis = useCallback(async (q?: string) => {
     setFormError(null);
     if (!isFormReady(formA) || !isFormReady(formB)) {
-      setFormError('请先填写双方完整出生信息');
+      setFormError("먼저 양 당사자의 완전한 출생 정보를 입력하세요.");
       return;
     }
     setAnalyzing(true);
@@ -95,7 +96,7 @@ export default function HemingPage() {
     setAnalysisError(false);
 
     try {
-      // 每次按当前表单起盘，避免编辑出生信息后复用旧盘。
+      // 출생 정보를 편집한 후 이전 디스크를 재사용하지 않으려면 매번 현재 형식에 따라 디스크를 시작하십시오.
       const [cA, cB] = await Promise.all([
         generateChart(formToBirthInfo(formA!)),
         generateChart(formToBirthInfo(formB!)),
@@ -178,12 +179,12 @@ export default function HemingPage() {
           }}
         >
           <span style={{ fontSize: '16px' }}>‹</span>
-          <span>返回</span>
+          <span>{koNode("돌아가기")}</span>
         </button>
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
-        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
+        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>{koNode("합성 분석")}</span>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>感情 · 合伙 · 亲子 · 朋友</span>
+        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>{koNode("관계 · 파트너십 · 부모와 자식 · 친구")}</span>
       </header>
 
       {/* 主体 */}
@@ -192,12 +193,8 @@ export default function HemingPage() {
         {/* 标题 */}
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{ fontSize: '28px', color: 'var(--ac)', opacity: 0.15, marginBottom: '12px' }}>☯</div>
-          <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>
-            紫微合盘
-          </h1>
-          <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
-            输入两个人的出生信息，AI 基于倪海厦体系分析双方命盘的缘分匹配度、感情走向与相处建议
-          </p>
+          <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>{koNode("자미 조합")}</h1>
+          <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>{koNode("두 사람의 출생 정보를 입력하면 AI가 니하이샤 시스템을 기반으로 두 사람의 운명 일치 정도, 관계 방향, 관계 제안 등을 분석한다.")}</p>
         </div>
 
         {/* 双栏表单 */}
@@ -205,7 +202,7 @@ export default function HemingPage() {
           className="heming-grid">
           {/* 甲方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>甲方 — A</span>
+            <span style={labelStyle}>{koNode("파티 A-A")}</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -215,7 +212,7 @@ export default function HemingPage() {
 
           {/* 乙方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>乙方 — B</span>
+            <span style={labelStyle}>{koNode("파티 B — B")}</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -236,16 +233,13 @@ export default function HemingPage() {
           {/* 区块标题 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: (analysis || analyzing) ? '20px' : '24px' }}>
             <span style={{ color: 'var(--ac)', opacity: 0.6 }}>◉</span>
-            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>合盘分析 · HEMING</span>
+            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>{koNode("합반 분석")}</span>
           </div>
 
           {/* 状态分支 */}
-          {!analysis && !analyzing && (
+          {koNode(!analysis && !analyzing && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
-              <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>
-                填好双方出生信息后，点击下方按钮<br />
-                AI 将基于倪海厦体系深度分析两人缘分匹配度
-              </div>
+              <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>{koNode("양측의 출생정보를 입력한 후 아래 버튼을 클릭하세요.")}<br />{koNode("AI는 니하이샤 시스템을 기반으로 두 사람의 운명 매치에 대한 심층 분석을 수행합니다.")}</div>
               <button
                 onClick={() => runAnalysis()}
                 style={{
@@ -258,53 +252,47 @@ export default function HemingPage() {
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
-              >
-                开始合盘分析
-              </button>
-              {formError && (
+              >{koNode("시장 분석 시작")}</button>
+              {koNode(formError && (
                 <div style={{ marginTop: '20px', fontSize: '13px', color: '#dc2626' }}>
-                  {formError}
+                  {koNode(formError)}
                 </div>
-              )}
+              ))}
             </div>
-          )}
+          ))}
 
-          {analyzing && !analysis && (
+          {koNode(analyzing && !analysis && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '40px 0', color: 'var(--tx-3)', fontSize: '13px' }}>
               <div style={{
                 width: '14px', height: '14px',
                 border: '2px solid var(--bdr-med)', borderTopColor: 'var(--ac)',
                 borderRadius: '50%', animation: 'spin 0.8s linear infinite',
-              }} />
-              正在对比双方命盘…
-            </div>
-          )}
+              }} />{koNode("양쪽 명반 비교…")}</div>
+          ))}
 
-          {analysis && <AiContent text={analysis} streaming={analyzing} />}
+          {koNode(analysis && <AiContent text={analysis} streaming={analyzing} />)}
 
-          {analysisError && (
+          {koNode(analysisError && (
             <div style={{ padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--bdr)', background: 'var(--bg-card)', fontSize: '13px', color: 'var(--tx-2)', marginTop: '12px' }}>
-              {apiMissing
-                ? '开源版不含合盘 AI 分析接口（/api/heming），需要你自己实现后才能用。两人的命盘可以分别到「排盘」页（/chart）查看。'
-                : '分析暂时不可用，请重试。'}
+              {koNode(apiMissing
+                ? "오픈소스 버전에는 Hepan AI 분석 인터페이스(/api/heming)가 포함되어 있지 않으며, 사용하기 전에 직접 구현해야 합니다. 두 사람의 명반은 '배반' 페이지(/차트)에서 따로 보실 수 있습니다."
+                : "일시적으로 분석을 사용할 수 없습니다. 다시 시도해 주세요.")}
             </div>
-          )}
+          ))}
         </div>
 
         {/* ═══ 针对合盘的追问聊天框（仅分析完成后显示）═══════════ */}
-        {analysis && (
+        {koNode(analysis && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
-            <div style={{ fontSize: '11px', letterSpacing: '0.2em', color: 'var(--tx-3)', marginBottom: '4px' }}>
-              针对此次合盘继续追问
-            </div>
+            <div style={{ fontSize: '11px', letterSpacing: '0.2em', color: 'var(--tx-3)', marginBottom: '4px' }}>{koNode("이번 합병에 대해 계속 질문하세요.")}</div>
 
             {/* 快捷问题 */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {[
+              {koNode([
                 '感情匹配度如何？',
                 '适合合伙创业吗？',
-                '两人结婚是否合适？',
-                '哪方面最容易产生矛盾？',
+                "두 사람이 결혼하는 것이 적절한가요?",
+                "갈등이 가장 많이 발생하는 곳은 어디입니까?",
                 '财运是否互补？',
               ].map(q => (
                 <button
@@ -323,9 +311,9 @@ export default function HemingPage() {
                   onMouseEnter={e => { if (!analyzing) (e.currentTarget as HTMLElement).style.borderColor = 'var(--ac-bdr)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--bdr-med)'; }}
                 >
-                  {q}
+                  {koNode(q)}
                 </button>
-              ))}
+              )))}
             </div>
 
             {/* 输入框 + 追问按钮 */}
@@ -335,7 +323,7 @@ export default function HemingPage() {
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !analyzing) runAnalysis(question || undefined); }}
-                placeholder="继续追问，如：哪几年是两人感情关键期？"
+                placeholder={ko("계속 질문하십시오. 두 사람의 관계에 있어 결정적인 시기는 몇 년입니까?")}
                 disabled={analyzing}
                 className="input-base"
                 style={{ fontSize: '13px', flex: 1 }}
@@ -352,18 +340,18 @@ export default function HemingPage() {
                   transition: 'all 0.15s', whiteSpace: 'nowrap',
                 }}
               >
-                {analyzing ? '分析中…' : '继续追问'}
+                {koNode(analyzing ? '分析中…' : '继续追问')}
               </button>
             </div>
           </div>
-        )}
+        ))}
       </div>
 
-      <style>{`
+      <style>{koNode(`
         @media (max-width: 680px) {
           .heming-grid { grid-template-columns: 1fr !important; }
         }
-      `}</style>
+      `)}</style>
     </div>
   );
 }

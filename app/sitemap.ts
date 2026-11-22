@@ -1,11 +1,10 @@
-/**
- * 自动生成 sitemap.xml
+/* *
+ * sitemap.xml 자동 생성
  *
- * 包含：
- *  - 主页、起盘页、合盘页
- *  - /library 古籍库（主页 + 3 部古籍 + 章节页）
- *  - /knowledge 知识库（主页 + 14×13 主题页）
- */
+ * 포함:
+ * - 홈 페이지, 시작 페이지, 종료 페이지
+ * - /library 고대 서적 도서관 (홈페이지 + 고대 서적 3개 + 장 페이지)
+ * - /knowledge 지식 베이스(홈페이지 + 14×13 주제 페이지) */
 
 import type { MetadataRoute } from 'next';
 import { ALL_BOOKS } from '@/lib/classics';
@@ -27,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/privacy`, priority: 0.3, changeFrequency: 'monthly', lastModified: lastmod },
   ];
 
-  // 古籍页
+  // 고대 도서 페이지
   const libraryPages: MetadataRoute.Sitemap = ALL_BOOKS.flatMap(book => {
     const bookHome: MetadataRoute.Sitemap[number] = {
       url: `${BASE_URL}/library/${book.slug}`,
@@ -44,7 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return [bookHome, ...chapters];
   });
 
-  // 知识库 14×13
+  // 기술 자료 14×13
   const knowledgePages: MetadataRoute.Sitemap = getAllKnowledgeRoutes().map(({ slug, topic }) => ({
     url: `${BASE_URL}/knowledge/${slug}/${topic}`,
     priority: 0.7,

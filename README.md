@@ -3,7 +3,7 @@
 [Renhuai123/ziwei-doushu](https://github.com/Renhuai123/ziwei-doushu)의 코드와 고전 자료를 복사한 독립 저장소입니다.
 
 - 원본 커밋: `39c0abd3b8dac609975dddfadd4d4e1d3a978deb`
-- 원저작자: 紫微研究 / 王多鱼AI
+- 원저작자: 紫微研究(자미 연구) / 王多鱼AI(왕둬위 AI)
 - 코드 라이선스: [MIT](./LICENSE). 원본 저작권 표시를 보존합니다.
 - 고전 원문: 원본에서 Public Domain으로 안내한 `lib/classics/`.
 
@@ -35,3 +35,8 @@ npm run dev
 npm run typecheck
 npm test
 ```
+## 한국어판
+
+화면 문구, 해설과 고전 본문, 개발 주석, 기여 안내와 이슈 양식을 한국어로 옮겼습니다. 고전 검색에는 한국어 검색어를 사용할 수 있습니다. 대량 해설은 자동 번역을 기반으로 하며 주요 자미두수 용어와 고전 본문 75개 문단을 별도로 검토했습니다.
+
+계산용 별·궁·간지 키, 코드 식별자와 URL은 호환성을 위해 유지합니다. 원본 법적 고지는 보존하고 [MIT 라이선스 한국어 번역](./LICENSE.ko.md)과 [데이터 이용 조건 한국어 번역](./DATASET-LICENSE.ko.md)을 제공합니다.

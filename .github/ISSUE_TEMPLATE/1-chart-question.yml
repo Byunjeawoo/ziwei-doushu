@@ -1,65 +1,63 @@
-name: 排盘结果疑问 / Chart result question
-description: 觉得某张盘排得不对？请附上出生信息和对照结果，我们才能逐项核。
-title: "[排盘疑问] "
+name: "배반 결과 문의"
+description: "명반 결과가 예상과 다르면 출생 정보와 비교 자료를 함께 남겨 주세요."
 labels: ["question"]
 body:
   - type: markdown
     attributes:
-      value: |
-        只写「不准」我们没法查。请按下面填完整，我们会逐项对照。
-        先看一眼：辅星亮度、闰月归属、晚子时是否换日在各流派本来就不同，这类差异不算 bug，但仍欢迎指出。
+      value: "보조성의 밝기, 윤달 귀속, 야자시 날짜 변경은 유파마다 다를 수 있습니다. 어떤 기준으로 비교했는지 알려 주세요."
   - type: input
     id: date
     attributes:
-      label: 出生日期（公历）
-      placeholder: 例：1990-05-12
+      label: "생년월일 (양력)"
+      placeholder: "예: 1990-05-12"
     validations:
       required: true
   - type: input
     id: time
     attributes:
-      label: 出生时间（几点几分）
-      placeholder: 例：08:30
+      label: "태어난 시각"
+      placeholder: "예: 08:30"
     validations:
       required: true
   - type: input
     id: place
     attributes:
-      label: 出生地或经度
-      description: 用来换算真太阳时；东西向经度差最多能差出一个时辰。
-      placeholder: 例：浙江杭州 / 东经 120.2°
+      label: "출생지 또는 경도"
+      placeholder: "예: 서울 / 동경 126.978도"
+    validations:
+      required: false
   - type: dropdown
     id: gender
     attributes:
-      label: 性别
-      options: ["男", "女"]
+      label: "성별"
+      options: ["남성","여성"]
     validations:
       required: true
   - type: textarea
     id: ours
     attributes:
-      label: 本项目排出的结果
-      description: 截图，或贴出 generateChart 输出里相关的那几项。
+      label: "이 프로젝트의 배반 결과"
+      placeholder: "스크린샷 또는 generateChart 출력의 해당 항목"
     validations:
       required: true
   - type: input
     id: ref
     attributes:
-      label: 拿什么对照
-      placeholder: 例：其它排盘软件 / 某本书第几页
+      label: "비교 자료의 출처"
+      placeholder: "다른 배반 프로그램 또는 책의 제목과 쪽수"
     validations:
       required: true
   - type: textarea
     id: theirs
     attributes:
-      label: 对照结果
-      description: 截图或文字。
+      label: "비교 자료의 결과"
+      placeholder: "스크린샷 또는 설명"
     validations:
       required: true
   - type: textarea
     id: diff
     attributes:
-      label: 具体哪一项不一致
-      placeholder: 例：命宫应在卯，这里排在戌
+      label: "서로 다른 항목"
+      placeholder: "예: 명궁이 묘궁이어야 하는데 술궁으로 표시됩니다."
     validations:
       required: true

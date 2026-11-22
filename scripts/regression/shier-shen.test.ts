@@ -1,4 +1,5 @@
-/** Regression coverage for 岁前/将前/博士十二神的公式与展示层渲染。 */
+import { ko } from '../../lib/i18n/ko';
+/* * Year Before/Jianqian/Doctor Twelve Gods의 공식 및 디스플레이 레이어 렌더링에 대한 회귀 범위입니다. */
 import assert from 'node:assert/strict';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -16,15 +17,15 @@ import {
 // classic JSX transform, which expects React as a global during SSR.
 Object.assign(globalThis, { React });
 
-// ── 单元：岁前十二神，岁建落起点支、顺行十二宫 ──
-const suiZi = suiQianShenByBranch(0); // 子年
+// ──단위: 해 전의 십이신, 해의 시작점을 정하고 열두 집이 앞으로 향하는 곳──
+const suiZi = suiQianShenByBranch(0); // 지 니안
 assert.equal(SUI_QIAN_SHEN[suiZi[0]], '岁建', '子年子宫应为岁建');
 assert.equal(SUI_QIAN_SHEN[suiZi[1]], '晦气', '子年丑宫应为晦气');
 assert.equal(SUI_QIAN_SHEN[suiZi[6]], '岁破', '岁破必在岁建对宫');
 assert.equal(SUI_QIAN_SHEN[suiZi[7]], '龙德', '子年未宫应为龙德');
 
-// ── 单元：将前十二神，将星起三合帝旺位 ──
-// 申子辰→子、寅午戌→午、巳酉丑→酉、亥卯未→卯
+// ──부대: 장군 이전의 12신, 삼합 황제의 자리에 별이 떠오른다──
+// 심자진→쯔인우수→오시유초→유해마오위→마오
 assert.equal(jiangXingBranch(0), 0, '子年将星在子');
 assert.equal(jiangXingBranch(4), 0, '辰年将星在子');
 assert.equal(jiangXingBranch(8), 0, '申年将星在子');
@@ -35,27 +36,27 @@ const jiangZi = jiangQianShenByBranch(0);
 assert.equal(JIANG_QIAN_SHEN[jiangZi[0]], '将星', '子年子宫应为将星');
 assert.equal(JIANG_QIAN_SHEN[jiangZi[1]], '攀鞍', '子年丑宫应为攀鞍');
 assert.equal(JIANG_QIAN_SHEN[jiangZi[5]], '劫煞', '子年巳宫应为劫煞');
-const jiangYin = jiangQianShenByBranch(2); // 寅年，将星在午
+const jiangYin = jiangQianShenByBranch(2); // 음력(陰年)에는 정오에 별이 뜬다.
 assert.equal(JIANG_QIAN_SHEN[jiangYin[6]], '将星', '寅年午宫应为将星');
 assert.equal(JIANG_QIAN_SHEN[jiangYin[11]], '劫煞', '寅年亥宫应为劫煞');
 
-// ── 单元：博士十二神，从生年禄存起，阳男阴女顺、阴男阳女逆 ──
-const boshiJiaMale = boshiShenByStem(0, 'male'); // 甲年阳男，禄存在寅，顺行
-assert.equal(BOSHI_SHEN[boshiJiaMale[2]], '博士', '甲年阳男寅宫应为博士');
-assert.equal(BOSHI_SHEN[boshiJiaMale[3]], '力士', '甲年阳男卯宫应为力士');
-assert.equal(BOSHI_SHEN[boshiJiaMale[11]], '大耗', '甲年阳男亥宫应为大耗（博士顺数第10）');
-const boshiJiaFemale = boshiShenByStem(0, 'female'); // 甲年阳女，逆行
-assert.equal(BOSHI_SHEN[boshiJiaFemale[2]], '博士', '甲年阳女寅宫应为博士');
-assert.equal(BOSHI_SHEN[boshiJiaFemale[1]], '力士', '甲年阳女丑宫应为力士（逆行）');
-const boshiYiMale = boshiShenByStem(1, 'male'); // 乙年阴男，禄存在卯，逆行
-assert.equal(BOSHI_SHEN[boshiYiMale[3]], '博士', '乙年阴男卯宫应为博士');
-assert.equal(BOSHI_SHEN[boshiYiMale[2]], '力士', '乙年阴男寅宫应为力士（逆行）');
+// ──유닛: 십이신 박사, 생년녹존, 양남음녀 전진, 음남양녀 후진──
+const boshiJiaMale = boshiShenByStem(0, 'male'); // A년 양남, 녹존는 음으로 앞으로 나아가고 있습니다.
+assert.equal(BOSHI_SHEN[boshiJiaMale[2]], '博士', "A년 양남 Yin Gong은 의사가 되어야 합니다");
+assert.equal(BOSHI_SHEN[boshiJiaMale[3]], '力士', "A년 양남 마오공은 강한 사람이어야 한다");
+assert.equal(BOSHI_SHEN[boshiJiaMale[11]], '大耗', "A학년의 양남는 대모(박사과정 10위)여야 합니다.");
+const boshiJiaFemale = boshiShenByStem(0, 'female'); // A년 양녀, 역행
+assert.equal(BOSHI_SHEN[boshiJiaFemale[2]], '博士', "A년 양녀 Yin Gong은 의사가 되어야 합니다");
+assert.equal(BOSHI_SHEN[boshiJiaFemale[1]], '力士', "A년 양녀의 추악한 궁전은 강한 궁전이어야 합니다(역행)");
+const boshiYiMale = boshiShenByStem(1, 'male'); // B년 음남, 녹존는 마오쩌둥, 역행
+assert.equal(BOSHI_SHEN[boshiYiMale[3]], '博士', "B학년 음남 마오공은 의사가 되어야 한다");
+assert.equal(BOSHI_SHEN[boshiYiMale[2]], '力士', "B년 음남 음궁은 강자가 되어야 한다(역행)");
 
-// ── 展示层：十二宫完整渲染，顺序固定为博士、将前、岁前 ──
-// 1990-05-15 午时男：庚午年（年干庚=6，年支午=6），阳男。
+// ──디스플레이 레이어: 황도대 렌더링 완료, 순서는 의사, 장군, 세로 고정 ──
+// 1990-05-15 오시 남: 號wu년(년 어간 Geng=6, 연도 Wu=6), 양남.
 const chart = generateChart({ year: 1990, month: 5, day: 15, hour: 6, gender: 'male', longitude: 120 });
-assert.equal(chart.lunarInfo.yearBranch, 6, '1990 年应为午年');
-assert.equal(chart.lunarInfo.yearStem, 6, '1990 年应为庚年');
+assert.equal(chart.lunarInfo.yearBranch, 6, "1990년은 정오의 해가 되어야 한다");
+assert.equal(chart.lunarInfo.yearStem, 6, "1990년은 겅의 해가 되어야 한다");
 
 const suiNames = new Set<string>();
 const jiangNames = new Set<string>();
@@ -68,44 +69,44 @@ for (const palace of chart.palaces) {
   };
   const html = renderToStaticMarkup(React.createElement(PalaceCell, { palace, shierShen }));
   assert.match(html, new RegExp(
-    `data-shier-shen="boshi"[^>]*>${shierShen.boshi}</span>` +
-    `<span data-shier-shen="jiangQian">${shierShen.jiangQian}</span>` +
-    `<span data-shier-shen="suiQian">${shierShen.suiQian}</span>`,
-  ), `${BRANCHES[palace.branch]}宫应按博士、将前、岁前竖排渲染`);
+    `data-shier-shen="boshi"[^>]*>${ko(shierShen.boshi)}</span>` +
+    `<span data-shier-shen="jiangQian">${ko(shierShen.jiangQian)}</span>` +
+    `<span data-shier-shen="suiQian">${ko(shierShen.suiQian)}</span>`,
+  ), `${BRANCHES[palace.branch]}궁은 의사, 장군, 세세에 따라 수직으로 렌더링되어야 합니다.`);
   suiNames.add(shierShen.suiQian);
   jiangNames.add(shierShen.jiangQian);
   boshiNames.add(shierShen.boshi);
 }
-assert.equal(suiNames.size, 12, '岁前十二神在十二宫不得重复');
-assert.equal(jiangNames.size, 12, '将前十二神在十二宫不得重复');
-assert.equal(boshiNames.size, 12, '博士十二神在十二宫不得重复');
+assert.equal(suiNames.size, 12, "한 살 이전의 열두 신은 열두 집에서 반복되어서는 안 됩니다.");
+assert.equal(jiangNames.size, 12, "처음 열두 신은 열두 하우스에서 반복되어서는 안 됩니다.");
+assert.equal(boshiNames.size, 12, "닥터와 십이신은 열두 집에서 반복되어서는 안 됩니다.");
 
 const palaceAt = (branch: number) => chart.palaces.find((p) => p.branch === branch)!;
 assert.equal(suiQianShenName(chart.lunarInfo.yearBranch, 6), '岁建', '午年午宫应为岁建');
-assert.equal(suiQianShenName(chart.lunarInfo.yearBranch, 0), '岁破', '午年子宫（对宫）应为岁破');
-assert.equal(jiangQianShenName(chart.lunarInfo.yearBranch, 6), '将星', '午年（寅午戌）将星在午');
-assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 8), '博士', '庚年禄存在申，阳男申宫应为博士');
-assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 9), '力士', '庚年阳男顺行，酉宫应为力士');
-assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 6), '伏兵', '庚年阳男午宫应为伏兵');
+assert.equal(suiQianShenName(chart.lunarInfo.yearBranch, 0), '岁破', "정오(대궁)에 자궁이 터져야 한다");
+assert.equal(jiangQianShenName(chart.lunarInfo.yearBranch, 6), '将星', "오(吳)년의 별은 정오에 뜬다.");
+assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 8), '博士', "Geng 연도 녹존는 Shen에 있고 양남 Shen Gong은 의사가되어야합니다");
+assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 9), '力士', "경년에는 양남가 직행하므로 유궁은 강자가 되어야 한다.");
+assert.equal(boshiShenName(chart.lunarInfo.yearStem, 'male', 6), '伏兵', "Geng Year 양남 Meridian Palace는 매복해야합니다");
 
-// ChartBoard 必须在展示层把同一组本命数据传给 PalaceCell，而不是依赖 Palace 新字段。
+// ChartBoard는 Palace의 새로운 필드에 의존하는 대신 프레젠테이션 계층에서 동일한 본명 데이터 세트를 PalaceCell에 전달해야 합니다.
 const boardHtml = renderToStaticMarkup(React.createElement(ChartBoard, { chart }));
-assert.match(boardHtml, /data-shier-shen="boshi"[^>]*>伏兵<\/span><span data-shier-shen="jiangQian">将星<\/span><span data-shier-shen="suiQian">岁建<\/span>/,
-  'ChartBoard 应在午宫依次渲染伏兵、将星、岁建');
+assert.match(boardHtml, /data-shier-shen="boshi"[^>]*>복병<\/span><span data-shier-shen="jiangQian">장성<\/span><span data-shier-shen="suiQian">세건<\/span>/,
+  "ChartBoard는 Meridian Palace에서 매복, 일반 별 및 연도 건물을 순서대로 렌더링해야 합니다.");
 
-// 阴女顺行：1991-05-15 午时女，辛未年（年干辛=7，年支未=7），禄存在酉。
+// 음녀 직동: 1991-05-15 오시 암컷, 신위년(년 어간 Xin=7, 연도 위=7), 녹존는 당신 안에 있습니다.
 const chartF = generateChart({ year: 1991, month: 5, day: 15, hour: 6, gender: 'female', longitude: 120 });
-assert.equal(chartF.lunarInfo.yearStem, 7, '1991 年应为辛年');
+assert.equal(chartF.lunarInfo.yearStem, 7, "1991년은 신의 해가 되어야 한다");
 const palaceF = chartF.palaces.find((p) => p.branch === 9)!;
 const shierShenF = {
   boshi: boshiShenName(chartF.lunarInfo.yearStem, chartF.birthInfo.gender, 9),
   jiangQian: jiangQianShenName(chartF.lunarInfo.yearBranch, 9),
   suiQian: suiQianShenName(chartF.lunarInfo.yearBranch, 9),
 };
-assert.equal(shierShenF.boshi, '博士', '辛年禄存在酉，阴女酉宫应为博士');
-assert.equal(boshiShenName(chartF.lunarInfo.yearStem, 'female', 10), '力士', '辛年阴女顺行，戌宫应为力士');
+assert.equal(shierShenF.boshi, '博士', "신년 녹존는 당신 안에 있고 음녀 당신 궁전은 의사가되어야합니다");
+assert.equal(boshiShenName(chartF.lunarInfo.yearStem, 'female', 10), '力士', "신년에는 음녀가 직진하고 서공은 강자가 되어야 합니다.");
 assert.equal(suiQianShenName(chartF.lunarInfo.yearBranch, 7), '岁建', '未年未宫应为岁建');
 const htmlF = renderToStaticMarkup(React.createElement(PalaceCell, { palace: palaceF, shierShen: shierShenF }));
-assert.match(htmlF, /data-shier-shen="boshi"[^>]*>博士<\/span>/, '阴女命盘酉宫应渲染博士');
+assert.match(htmlF, /data-shier-shen="boshi"[^>]*>박사<\/span>/, "음녀명반 유공 잉그렌더 박사");
 
-console.log('✓ 岁前/将前/博士十二神公式单元 + 展示层渲染回归通过');
+console.log("✓ 시대/Jiangqian/Doctor Twelve God 수식 단위 + 디스플레이 레이어 렌더링 회귀가 통과되기 전");

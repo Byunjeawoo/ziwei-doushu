@@ -1,17 +1,16 @@
-/**
- * 样本时辰一致性回归（对应 issue #26）
+/* *
+ * 샘플 시진 일관성 회귀(문제 #26에 해당)
  *
- * FAMOUS_PERSONS 里的 `hour` 是**时辰地支索引 0–11**（0=子 … 11=亥），
- * 不是 0–23 的小时数。历史上注释与索引曾经对不上（11 条里错 7 条：
- * hour 5 写成「午时」实为巳时、3 写成「寅时」实为卯时、4 写成「卯时」实为辰时）。
+ * FAMOUS_PERSONS의 `hour`는 **시진지지 인덱스 0–11**(0=子…11=해)입니다.
+ * 0~23시간의 숫자는 아닙니다. 역사적으로 주석과 색인은 일관성이 없었습니다(오류 11개 중 7개:
+ *"오시"로 쓰여진 5시는 실제로 사시이고, "인시"로 쓰여진 3은 실제로 묘시이며, "묘시"로 쓰여진 4는 실제로 진시입니다.
  *
- * 这条回归钉住两件事：
- *   1. 每条样本的 hour 必须落在 0–11；
- *   2. 带「X时」注释的样本，注释必须与索引对应的地支一致。
+ * 이 회귀 분석에서는 두 가지 사항이 결정됩니다.
+ * 1. 각 샘플의 시간은 0~11 범위 내에 있어야 합니다.
+ * 2. "X 시간" 주석이 있는 샘플의 경우 주석은 인덱스에 해당하는 지지와 일치해야 합니다.
  *
- * 走源码解析而非运行时 import —— famous.ts 带 `server-only`，
- * 直接跑需要额外的 node 条件参数，解析源码更省事也更跨平台。
- */
+ * 런타임 가져오기 대신 소스 코드 구문 분석을 사용합니다 - `server-only`가 포함된 famous.ts,
+ * 직접 실행에는 추가 노드 조건 매개변수가 필요하며 소스 코드를 구문 분석하는 것이 더 쉽고 크로스 플랫폼입니다. */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
@@ -19,24 +18,24 @@ const BRANCH_NAMES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '�
 const src = readFileSync(new URL('../../lib/ziwei/famous.ts', import.meta.url), 'utf8');
 
 const rows = [...src.matchAll(/hour:\s*(\d+),?[ \t]*(?:\/\/[ \t]*(.*))?/g)];
-assert.ok(rows.length > 0, 'famous.ts 里没解析到任何 hour 字段，正则或文件结构变了');
+assert.ok(rows.length > 0, "famous.ts에서는 시간 필드가 구문 분석되지 않았으며 일반 패턴 또는 파일 구조가 변경되었습니다.");
 
 let annotated = 0;
 for (const [, raw, comment] of rows) {
   const hour = Number(raw);
   assert.ok(
     Number.isInteger(hour) && hour >= 0 && hour <= 11,
-    `hour 必须是 0–11 的时辰地支索引，实际 ${raw}`,
+    `hour는 실제 시진지지 인덱스 0-11이어야 합니다.${raw}`,
   );
   if (!comment) continue;
-  const named = BRANCH_NAMES.find((b) => comment.includes(`${b}时`));
+  const named = BRANCH_NAMES.find((b) => comment.includes(`${b}시`));
   if (!named) continue;
   annotated++;
   assert.equal(
     named,
     BRANCH_NAMES[hour],
-    `hour: ${hour} 的注释写着「${named}时」，但索引 ${hour} 实际是「${BRANCH_NAMES[hour]}时」`,
+    `hour: ${hour}메모에는 "${named}시간"이지만 인덱스${hour}사실은 "${BRANCH_NAMES[hour]}시간`,
   );
 }
 
-console.log(`✅ 样本时辰一致性：${rows.length} 条样本 hour 均在 0–11，其中 ${annotated} 条带时辰注释且与索引一致`);
+console.log(`✅ 샘플 시진 일관성:${rows.length}샘플 시간은 모두 0~11입니다.${annotated}스트립 시진 주석 및 색인과 일치`);

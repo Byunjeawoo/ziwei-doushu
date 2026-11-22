@@ -1,49 +1,48 @@
-/**
- * 真太阳时排盘入口 —— 给直接调用 `generateChart` 的库使用者。
+/* *
+ * 진태양시배반 항목 - `generateChart`에 직접 전화하는 도서관 사용자용입니다.
  *
- * ## 为什么需要这个文件
+ * ##이 파일이 왜 필요한가요?
  *
- * `BirthInfo.longitude` 在 `types.ts` 里被标注为「出生地经度（用于真太阳时校正）」，
- * 但 `generateChart`（`lib/ziwei/algorithm.ts`）只解构 `{ year, month, day, hour, gender }`，
- * 从不读 `longitude`。结果：库使用者若自己调 `generateChart` 并填了经度，
- * 时辰仍按原始钟表时间取，**静默无任何提示**。
+ * `BirthInfo.longitude`는 `types.ts`에 "출생지 경도(진태양시 보정에 사용)"로 표시되어 있으며,
+ * 단, `generateChart`(`lib/ziwei/algorithm.ts`)는 `{ year, month, day, hour, gender }`만 분해하고,
+ * 절대로 `longitude`를 읽지 마세요. 결과: 라이브러리 사용자가 `generateChart`를 조정하고 경도를 입력하면
+ * 시진은 **어떤 프롬프트도 없이** 자동으로 원래 시계 시간을 그대로 사용합니다.
  *
- * ## 关键约束：hour 是时辰支索引，不是钟表小时
+ * ## 키 제약 조건: hour는 시계 시간이 아닌 시진 분기 인덱스입니다.
  *
- * `BirthInfo.hour` 是 0–11 的**时辰支索引**（0=子、1=丑、…、11=亥），不是钟表小时。
- * `generateChart` 因此永远拿不到原始钟点，无法自行推算真太阳时。
- * 原始钟点只保存在 `BirthInfo.origInput`（可选字段）里，或由调用方显式传入。
+ * `BirthInfo.hour`는 시계 시간이 아닌 0~11(0=子, 1=Chou,…, 11=hai)의 **시진 분기 지수**입니다.
+ * `generateChart` 따라서 원래 시간을 얻을 수 없으며 직접 진태양시를 계산할 수도 없습니다.
+ * 원래 시계는 `BirthInfo.origInput`(선택적 필드)에만 저장되거나 호출자가 명시적으로 전달합니다.
  *
- * 这正是 `generateChart` 无法「顺手」修好的原因，也是本文件存在的原因：
- * 把「知道原始钟点」的职责交给调用方，用一个显式入口来承接。
- * 本文件**不修改** `generateChart` 的既有行为（默认开启校正属于破坏性变更）。
+ * 이것이 바로 `generateChart`가 "쉽게" 복구될 수 없는 이유와 이 파일이 존재하는 이유입니다.
+ * "원래 시간을 아는 것"의 책임을 발신자에게 맡기고 명시적인 항목을 사용하여 인수하십시오.
+ * 이 문서는 `generateChart`의 기존 동작을 **수정하지 않습니다**(기본적으로 활성화된 수정은 파괴적인 변경입니다).
  *
- * ## 口径：与 Web 表单路径完全同一条路
+ * ## 구경 : 웹폼 경로와 정확히 동일한 경로
  *
- * 本入口的换算逻辑与 `share.ts` 的 `formToBirthInfo` **逐行同构**，只复用
- * `true-solar-time.ts` 的三个现成函数，不另写任何公式：
+ * 이 항목의 변환 논리는 `share.ts`의 `formToBirthInfo` **라인 단위**와 동일하며 재사용만 가능합니다.
+ * 추가 수식을 작성하지 않고도 `true-solar-time.ts`의 세 가지 기성 기능:
  *
- *   solar     = calculateTrueSolarTime(钟点 + 经度 + 时区偏移)
- *   dayOffset = resolveZiweiDayOffset(solar, lateZishi)
- *   排盘日     = shiftGregorianDate(出生日, dayOffset)（dateValid 时）
- *   时辰支     = solar.branch
+ * 태양 = 계산TrueSolarTime(시계 + 경도 + 시간대 오프셋)
+ * dayOffset =solveZiweiDayOffset(태양, lateZishi)
+ * 배반 day = ShiftGregorianDate(생일, dayOffset) (dateValid인 경우)
+ * 시진 분기 = Solar.branch
  *
- * 晚子时（真太阳时 23:00–23:59）是否换日由 `resolveZiweiDayOffset` 按
- * **真太阳时**判定，与时辰支同一口径——这是 #63 合入后的引擎规格，
- * 也是线上排盘的默认口径。注意：README 数据集章节里「23:00–23:59 按次日
- * 排盘」那句只适用于经度固定 120°、不做校正的样本集，不能当引擎规格用。
+ * 야자시(진태양시 23:00~23:59) 날짜 변경 여부는 `resolveZiweiDayOffset`에 따라 다릅니다.
+ * **진태양시**는 시진 분기와 동일한 구경으로 판단됩니다. 이는 #63이 병합된 후의 엔진 사양입니다.
+ * 온라인 배반의 기본 구경이기도 합니다. 참고: README 데이터 세트 장의 "23:00–23:59"는 다음 날을 기준으로 합니다.
+ *배반"는 고정 경도 120°의 샘플 세트에만 적용 가능하며 보정이 없으며 엔진 사양으로 사용할 수 없습니다.
  *
- * 回归测试 `chart-entry.test.ts` 钉住这一点：同一出生输入，
- * 本入口与 `formToBirthInfo` 的排盘日、时辰支必须一致。
+ * 회귀 테스트 `chart-entry.test.ts`는 다음을 확인합니다: 동일한 출생 입력,
+ * 이 항목은 `formToBirthInfo`의 배반 및 시진 분기와 일치해야 합니다.
  *
- * ## 海外出生地：utcOffsetMinutes
+ * ## 해외 출생지: utcOffsetMinutes
  *
- * `BirthInfo` 上没有时区字段。海外出生地的钟表读数所属时区，
- * 通过 `clock.utcOffsetMinutes` 或 `opts.utcOffsetMinutes` 显式传入并透传给
- * `calculateTrueSolarTime`；不传时引擎按东八区（480）计算，与既有行为一致。
- * 与引擎既有口径一致：这里只接受**标准时间**偏移，不处理夏令时——
- * 若手头是夏令时的钟表读数，先用 `clock-adjust.ts` 换成标准时间再传进来。
- */
+ * `BirthInfo`에는 시간대 필드가 없습니다. 해외 출생지의 시계 읽기 시간대,
+ * `clock.utcOffsetMinutes` 또는 `opts.utcOffsetMinutes`를 통해 명시적이고 투명하게 전달
+ * `calculateTrueSolarTime`; 전송되지 않은 경우 엔진은 East Eighth District(480)를 기반으로 계산하며 이는 기존 동작과 일치합니다.
+ * 기존 엔진 구경과 일치: 여기서는 **표준 시간** 오프셋만 허용되며 일광 절약 시간은 처리되지 않습니다.
+ * 일광 절약 시간제 시계를 읽고 있는 경우 `clock-adjust.ts`를 사용하여 이를 표준 시간으로 변환한 후 전달하세요. */
 
 import { generateChart, type LunarMonthPolicy } from './algorithm';
 import {
@@ -55,33 +54,30 @@ import {
 import type { BirthInfo, ZiweiChart } from './types';
 
 export interface TrueSolarChartOptions {
-  /**
-   * 晚子时换日流派，透传给 `resolveZiweiDayOffset`。
-   * - `next-day`（默认）：真太阳时 23:00–23:59 按次日排盘（主流口径，与表单路径一致）
-   * - `current-day`：晚子时仍按当日排盘
-   * 其余两个值是八字口径，紫微主盘不采用，仅在需要与八字对齐时传入。
-   */
+  /* *
+   * 야자시의 요일변경 스타일은 `resolveZiweiDayOffset`로 전송됩니다.
+   * - `next-day` (기본값): 다음날 배반에 따라 진태양시 23:00–23:59 (주류 구경, 양식 경로와 일치)
+   * - `current-day`: 야자시는 여전히 당시의 배반를 기반으로 합니다.
+   * 나머지 두 값은 팔자 구경으로, 자미 메인 디스크에서는 사용되지 않으며 팔자와 정렬해야 할 때만 전달됩니다. */
   lateZishi?: LateZishiRule;
-  /** 闰月流派口径，直接透传给 `generateChart`。 */
+  /* * 윤달 장르 구경은 `generateChart`로 직접 전송됩니다. */
   leapMonth?: LunarMonthPolicy;
-  /**
-   * 钟表读数所在时区的标准偏移（分钟，东正西负），如纽约标准时间 -300。
-   * `clock.utcOffsetMinutes` 的优先级高于此项；两者都不传时按东八区（480）计算。
-   */
+  /* *
+   * 시계가 읽는 시간대의 표준 오프셋(분 단위, 동쪽 + 서쪽 -)입니다. 뉴욕 표준시 -300.
+   * `clock.utcOffsetMinutes`는 이보다 우선순위가 높습니다. 둘 다 전송되지 않으면 동8구(480)로 계산됩니다. */
   utcOffsetMinutes?: number;
 }
 
-/**
- * 已知出生钟点时的排盘输入。
- * `clockHour/clockMinute` 是**钟表读数**（0–23 / 0–59），与时辰支索引无关。
- */
+/* *
+ * 출생 시간을 알 때 배반를 입력합니다.
+ *`clockHour/clockMinute`는 **시계 판독**(0–23 / 0–59)이며 시진 분기 인덱스와 관련이 없습니다. */
 export interface ClockBirthInput {
   year: number;
   month: number;
   day: number;
   clockHour: number;
   clockMinute: number;
-  /** 该钟表读数所在时区的标准偏移（分钟，东正西负）；不传则用 opts 的值，再不传按东八区。 */
+  /* * 시계 판독값이 위치한 시간대의 표준 오프셋(분, 동서 마이너스) 통과되지 않은 경우 opts 값이 사용되며, 그렇지 않으면 동쪽 8개 영역이 사용됩니다. */
   utcOffsetMinutes?: number;
 }
 
@@ -90,12 +86,11 @@ function isValidClock(hour: number, minute: number): boolean {
     && hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
 }
 
-/**
- * 从 `BirthInfo` 里取出原始钟点。
+/* *
+ * `BirthInfo`에서 원래 영업시간을 검색합니다.
  *
- * 数据来源：`birthInfo.origInput`（表单路径会自动填）。
- * 没有时返回 null —— 此时无法做真太阳时校正，调用方会拿到未修正的盘。
- */
+ * 데이터 소스: `birthInfo.origInput` (양식 경로는 자동으로 채워집니다.)
+ * 돌아가기 null이 없는 경우 - 지금은 진태양시 수정을 수행할 수 없으며 호출자는 수정되지 않은 디스크를 받게 됩니다. */
 export function extractClock(birthInfo: BirthInfo): ClockBirthInput | null {
   const oi = birthInfo.origInput;
   if (oi && isValidClock(oi.clockHour, oi.clockMinute)) {
@@ -110,20 +105,19 @@ export function extractClock(birthInfo: BirthInfo): ClockBirthInput | null {
   return null;
 }
 
-/**
- * 把「原始出生输入 + 经度」转换成「已按真太阳时校正的 BirthInfo」。
+/* *
+ * "원시 출생 입력 + 경도"를 "진태양시로 수정된 출생 정보"로 변환합니다.
  *
- * 返回的 `BirthInfo` 可以直接喂给 `generateChart`。
- * 换算路径与 `formToBirthInfo` 完全一致（见文件头说明）：
- * 真太阳时跨日（`dayOffset`，含晚子时换日）会反映到排盘日，时辰支取真太阳时支。
+ * 돌아가기의 `BirthInfo`는 `generateChart`에 직접 공급될 수 있습니다.
+ * 변환 경로는 `formToBirthInfo`와 정확히 동일합니다(파일 헤더 설명 참조):
+ *진태양시 크로스데이(`dayOffset`, 야자시 일일스왑 포함)은 배반데이에 반영되며, 시진은 진태양시로 출금됩니다.
  *
- * @param birthInfo 原始输入。`year/month/day` 视为**用户填的公历生日**（未换日）。
- * @param clock 已知钟点时的原始钟表读数；不传则尝试从 `birthInfo.origInput` 取。
- * @param opts.lateZishi 晚子时换日流派，默认 `next-day`（与表单路径一致）。
- * @param opts.utcOffsetMinutes 钟表读数所在时区的标准偏移；`clock` 上同名字段优先。
+ * @parambirthInfo 원본 입력. `year/month/day`는 사용자가 입력한 **양력**의 생일로 간주됩니다(날짜는 변경되지 않았습니다).
+ * @param clock 시계가 알려졌을 때 읽는 원래 시계입니다. 통과하지 못한 경우 `birthInfo.origInput`에서 가져오세요.
+ * @param opts.lateZishi 야자시 날짜 변경 장르, 기본 `next-day`(양식 경로와 일치).
+ * @param opts.utcOffsetMinutes 시계 판독값이 있는 시간대의 표준 오프셋입니다. `clock`에서 동일한 이름을 가진 필드가 우선적으로 적용됩니다.
  *
- * @throws 当传了 `clock` 但它不合法（小时不在 0–23、分钟不在 0–59）时抛出。
- */
+ * `clock`가 전달되었지만 잘못된 경우 @throw가 발생합니다(시간은 0~23이 아니고 분은 0~59가 아님). */
 export function resolveTrueSolarBirthInfo(
   birthInfo: BirthInfo,
   clock?: ClockBirthInput,
@@ -131,8 +125,8 @@ export function resolveTrueSolarBirthInfo(
 ): BirthInfo {
   const src = clock ?? extractClock(birthInfo);
 
-  // 没有钟点 → 无法校正 → 原样返回，但把经度带上，
-  // 让下游（若自行调用 true-solar-time）仍有机会处理。
+  // 시 없음 → 수정 불가 → 돌아가기 그대로 경도를 가져와,
+  // 다운스트림(진태양시를 직접 호출하는 경우)에는 여전히 처리할 기회가 있습니다.
   if (!src) {
     return birthInfo;
   }
@@ -145,7 +139,7 @@ export function resolveTrueSolarBirthInfo(
   const longitude = birthInfo.longitude;
   const hasLongitude = longitude !== undefined && Number.isFinite(longitude);
 
-  // 与 formToBirthInfo 同一条路：真太阳时 → 时辰支 + 换日偏移 → 排盘日。
+  // formToBirthInfo와 동일한 경로: 진태양시 → 시진 분기 + 요일 변경 오프셋 → 배반 요일.
   const solar = calculateTrueSolarTime({
     year: src.year,
     month: src.month,
@@ -170,17 +164,16 @@ export function resolveTrueSolarBirthInfo(
   };
 }
 
-/**
- * 真太阳时排盘入口 —— 已知出生钟点时使用。
+/* *
+ * 진태양시배반 항목 - 출생 시간을 알 때 사용됩니다.
  *
- * @param birthInfo 原始输入。`year/month/day` 视为用户填的公历生日（未换日）。
- * @param clock 已知钟点时的原始钟表读数；不传则尝试从 `birthInfo.origInput` 取。
- * @param opts.lateZishi 晚子时换日流派，默认 `next-day`。
+ * @parambirthInfo 원본 입력. `year/month/day`는 사용자가 날짜를 변경하지 않고 입력한 양력의 생일로 간주됩니다.
+ * @param clock 시계가 알려졌을 때 읽는 원래 시계입니다. 통과하지 못한 경우 `birthInfo.origInput`에서 가져오세요.
+ * @param opts.lateZishi 야자시 날마다 바뀌는 장르, 기본 `next-day`.
  *
- * 行为：
- *  - 无经度且无钟点 → 与直接调 `generateChart` 完全一致（零回归）。
- *  - 有经度且有钟点 → 按真太阳时校正排盘日与时辰支，与表单路径结果一致。
- */
+ * 행동:
+ * - 경도 및 시간 없음 → 직접 조정 `generateChart`(영점 복귀)와 정확히 동일합니다.
+ * - 경도와 시가 있습니다 → 진태양시에 따라 배반 요일과 시진 분기를 수정하여 양식 경로 결과와 일치합니다. */
 export function generateTrueSolarChart(
   birthInfo: BirthInfo,
   clock?: ClockBirthInput,
